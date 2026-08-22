@@ -1,0 +1,21 @@
+{
+  "name": "evidence-graded-incident-analysis",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Evidence-graded cybersecurity incident analysis prompt and self-contained interactive report reference.",
+  "scripts": {
+    "build:graph": "esbuild src/graph/incident-graph.jsx --bundle --minify --format=iife --target=es2020 --metafile=.graph-build/meta.json --outfile=.graph-build/incident-graph.js",
+    "embed:graph": "node scripts/embed-graph-bundle.mjs",
+    "build": "npm run build:graph && npm run embed:graph",
+    "validate": "node scripts/validate.mjs"
+  },
+  "dependencies": {
+    "@xyflow/react": "12.11.3",
+    "html-to-image": "1.11.13",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12"
+  }
+}

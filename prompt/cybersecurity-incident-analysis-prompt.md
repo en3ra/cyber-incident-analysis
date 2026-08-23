@@ -15,6 +15,14 @@ indexed sections, restrained red signals, and graphite analytical instruments. I
 general inspiration from high-quality industrial product/editorial design, but must not copy
 another site's branding, proprietary assets, exact layout, wording, or distinctive identity.
 
+**One publication, many incidents.** Every report from this template must be recognisable
+as the same product. The presentation shell — page order, the eight Part dividers, layout,
+navigation, typography, colour tokens, and the graph's surface and styling — is **fixed and
+identical for every incident**. What varies is the evidence, the analysis, and which
+numbered sections appear inside each Part. Part 8 states the shell as a binding contract;
+follow its concrete values exactly rather than designing an equivalent. Differences in
+model, application, or available tooling must never change the shell.
+
 ---
 
 ## How to use this — one prompt, one input
@@ -550,13 +558,48 @@ Use the remaining sections only when the incident and audience support them:
 Keep the applicability decision in working state; do **not** display a `Report applicability`
 statement in the finished artifact unless the user explicitly requests it. Keep canonical
 section numbers for included sections so reports remain comparable; navigation must index
-only sections actually rendered.
+every Part plus only the sections actually rendered.
+
+### What is fixed and what adapts to the incident
+
+Two different things are being decided, and they must not be confused:
+
+| Layer | Rule | Why |
+|---|---|---|
+| **Presentation shell** — page order, Part dividers, layout grid, navigation, typography, colour tokens, outer component anatomy, graph surface and styling, print behaviour | **Fixed. Identical for every incident.** Reproduce the reference contract in Part 8 exactly. | Reports must be recognisable as the same publication and comparable side by side |
+| **Section inventory inside each Part** — which numbered sections appear, how many, their depth and their incident-specific titles | **Adaptive.** Driven by the evidence, per the applicability gate above | Every incident is different; forcing 25 substantive sections manufactures filler |
+| **Analytical content** — findings, evidence topology, graph nodes and edges, chronology, controls | **Adaptive.** Driven entirely by sourced evidence | The analysis must follow the facts |
+
+**All eight Parts (0 and I–VII) are always rendered.** A Part is a fixed structural
+divider, not a section. If an entire Part would otherwise be empty because no section
+inside it is applicable, still render the Part divider and place a single short sourced
+statement under it explaining what the public evidence does not support — never delete the
+Part and never pad it with speculation.
+
+Within a Part, the number of sections is expected to vary between incidents. Rendering
+three sections in one Part for one incident and six for another is correct behaviour, not
+an inconsistency. Adding an extra incident-specific section inside the correct Part is
+permitted when the evidence genuinely supports a distinct analytical function that no
+canonical section covers; give it the next unused number above 25, a category label in the
+same style, and place it in the Part where it belongs. Never renumber canonical sections to
+accommodate it.
+
+Never vary the shell to suit an incident. Layout, spacing, outer component anatomy, graph
+appearance, and navigation must not change because the subject matter changed.
+
+**Where "fixed" stops.** The shell fixes the *slots* and their appearance: the header, the
+cover, the incident-pathway slot, the graph slot, the chronology slot, the navigation, the
+section rows, and the footer. It does not fix the analytical model rendered *inside* the
+pathway slot — a linear stage rail, parallel evidence lanes, a decision tree, or a
+hypothesis board are all correct choices driven by the evidence topology, as described in
+Part 8. Whichever model the evidence requires, it occupies the same slot, in the same
+position, with the same framing, typography and controls.
 
 ### Canonical Part dividers and section heading labels
 
 Part titles are visible report structure, not internal drafting labels. Always render
-`Part 0 — Incident parameters` before the numbered analysis, followed by every Part that
-contains a rendered section, using these titles exactly:
+`Part 0 — Incident parameters` before the numbered analysis, followed by every Part,
+using these titles exactly:
 
 - `Part I — For Decision Makers`
 - `Part II — Understanding the Attack`
@@ -566,9 +609,10 @@ contains a rendered section, using these titles exactly:
 - `Part VI — Governance`
 - `Part VII — Reference`
 
-Do not omit a Part title while rendering any of its sections. Include Part titles in both
-desktop and mobile navigation. Part 0 must contain the incident parameters and document
-control material rather than appearing as an empty divider.
+Always render every Part title, in this order, whether or not it currently holds many
+sections. Include Part titles in both desktop and mobile navigation. Part 0 must contain
+the incident parameters and document control material rather than appearing as an empty
+divider.
 
 Every rendered numbered section must show both its stable category label and its
 incident-specific title as two distinct heading levels:
@@ -836,10 +880,142 @@ Do **not**:
 
 ## PART 8 — Deliverable specification
 
+### Template conformance (read before generating anything)
+
+Every report produced from this template is an edition of **one publication**, not a
+one-off design. Two reports about unrelated incidents, generated by different assistants
+in different applications, must look and behave like the same product: same page order,
+same shell, same components, same graph surface, same navigation, same print output. Only
+the evidence, the section inventory, and the analytical content differ.
+
+Treat the specification in this Part as a **binding contract, not inspiration**. Where a
+concrete value is given — a page order, a pattern type, a grid spacing, a control name, a
+height, a token — reproduce that value. Do not substitute an equivalent-looking choice, do
+not "improve" the composition, and do not simplify it because the incident is smaller or
+the environment has fewer tools. If you find yourself designing, stop and re-read this Part.
+
+The most common failure is a report that satisfies every requirement in isolation while
+looking like a different product: a different page order, a heavier graph background, a
+smaller canvas, a different header, different node styling. That is a conformance failure
+even when nothing is factually wrong.
+
+### Fixed page order
+
+Render exactly this sequence, top to bottom. This order is identical for every incident,
+every report profile, and both generation modes:
+
+1. Skip link, reading-progress rule
+2. Sticky utility header — brand/incident slug, plus `Menu` (mobile), `Print`, `Theme`
+3. AI-generated/not-official notice
+4. Cover — taxonomy bracket, headline, summary paragraph, four-column fact rail
+5. **Incident pathway** — the staged/lane analytical instrument
+6. **Sourced relationship graph**
+7. **Campaign chronology**
+8. `Part 0 — Incident parameters` with the document-control block
+9. `Part I` … `Part VII`, each divider followed by its applicable numbered sections
+10. Footer with the repeated AI notice
+
+The three interactive surfaces (5–7) always sit **between the cover and Part 0**, never
+after Part 0 and never interleaved among the numbered sections. Part 0 opens the numbered
+report. Do not move, merge, or reorder these blocks.
+
+Use these stable anchors and navigation labels so reports remain comparable and linkable:
+`#interactive-attack` (`PATH` / Incident pathway), `#interactive-graph` (`MAP` / Sourced
+relationship graph), `#interactive-timeline` (`TIME` / Campaign chronology), `#part-0`
+through `#part-7`, and `#section-1` … `#section-25` for rendered sections.
+
+### Mandatory shell anatomy
+
+These are structural constants. Reproduce them regardless of incident or environment:
+
+- **Utility header** — sticky, ~64–72px, one-pixel bottom rule, square brand mark
+  containing the incident slug, controls right-aligned, 44px minimum targets.
+- **Cover** — bracketed incident taxonomy line, a single strong headline, a summary
+  paragraph of roughly 45–75 words, and a **four-column** fact rail of one-line
+  specifications. The fact rail is always four columns on desktop; it collapses to two on
+  narrow screens. Keep the cover short enough that the incident pathway below it is
+  visibly suggested in the first viewport.
+- **Reading layout** — a two-column grid: a persistent left navigation column of roughly
+  250–280px containing a section-find input and the indexed contents, and the content
+  column beside it. The navigation lists the three interactive surfaces first, then every
+  Part and every rendered section, with active-location state.
+- **Numbered sections** — each rendered as a two-column row: a 140–170px section-index
+  column carrying the number and category label, and the readable content column beside it.
+- **Mobile dock** — fixed, safe-area-aware, exactly four destinations: Overview, Attack,
+  Graph, Report.
+- **Footer** — repeated AI notice plus generation metadata.
+
+### Fixed visual tokens
+
+Use these values, not approximations of them:
+
+- Base paper `#ECEEEF`, primary surface `#F8F9F9`, secondary surface `#DFE3E5`, body ink
+  `#0B0C0D`, rule lines `#B9C0C4`, single red signal `#E53B32`, graphite `#1D2022`.
+- Teal, blue and amber are reserved exclusively for evidence/confidence semantics.
+- Body copy 16–18px at roughly 1.55–1.7 line height, 65–72 characters per line.
+- Square geometry: 0–2px radii only. One-pixel structural rules. No floating card
+  dashboard, no pills, no glass, no shadow-heavy surfaces.
+- Local grotesk stack only — `Arial Narrow`, `Aptos Display`, `Helvetica Neue`, Arial.
+  Uppercase for display headings, controls and indexed labels; sentence case for body copy.
+- Red marks active navigation, critical state and directional emphasis only. It is never a
+  large reading surface.
+
+### Graph surface and styling contract
+
+The relationship graph is the component that varies most between generations, so its
+appearance is specified exactly. These values are not suggestions:
+
+- **Canvas background pattern: a faint dot field. Never a grid of lines.** Dots of
+  approximately 0.4–0.5px radius on a **42px** spacing, drawn at roughly 3–4% opacity
+  against the canvas surface — light theme dots near `rgba(30,40,55,.035)` on a `#F8F9F9`
+  canvas, dark theme dots near `rgba(255,255,255,.035)` on a near-black canvas. The
+  pattern must read as a barely perceptible
+  calibration field. If the dots are individually noticeable at normal zoom, or if the
+  background reads as graph paper, ruled squares, or a visible grid, it is wrong. Do not
+  use `--rule` or any full-strength line colour for the canvas pattern.
+- **Canvas size** — minimum 650px tall on desktop, filling the available width of the
+  graph shell. Do not ship a short or letterboxed canvas.
+- **Graph shell** — a single bordered frame containing the canvas and, on desktop, a
+  fixed evidence inspector column of roughly 320–360px on the right. The inspector stacks
+  below the canvas on narrow screens. The shell is one-pixel bordered, square, and sits on
+  the primary surface.
+- **Nodes** — compact rectangular evidence cards of roughly 170–190px by 80–95px, square
+  cornered, one-pixel bordered, on flat pastel type-keyed fills. Each card shows, in this
+  order: a small uppercase stage/type label, the node title in bold, and a footer line
+  giving confidence and source IDs. Solid fills only — no gradients, gloss, 3D shading,
+  metallic effects, or heavy drop shadows. Never use circles, spheres, or bubbles.
+- **Sequence badges** — small red circular badges with a surface-coloured ring, roughly
+  24–26px, placed on the node's upper-right corner, and applied only to nodes on a
+  defensible primary causal path.
+- **Edges** — thin muted orthogonal or smooth-step connectors with arrow markers and
+  small captions on a surface-coloured backing so labels never collide with nodes or each
+  other. Selection promotes the immediate path to the red signal at increased width while
+  leaving unrelated context legible.
+- **Controls** — a single control bar above the canvas containing, in this order: node
+  search, node-type filter, confidence filter, then `Zoom out`, `Zoom in`, `Fit`, `Reset`,
+  `Full screen`, and `PNG`. All nine are visible controls; mouse-wheel zoom is an addition
+  to the zoom buttons, never a replacement. Place `Fit`, `Full screen` and `PNG` so they
+  remain reachable in fullscreen.
+- **Legend and register** — a flat type legend beneath the controls, and a scrollable
+  textual edge register below the canvas exposing source node, relationship, target node,
+  epistemic state, confidence and evidence IDs for every visible edge.
+- **Fullscreen** must enclose the canvas *together with* its controls, legend and
+  inspector, use the whole viewport, and refit the visible nodes.
+
+The incident's evidence topology still determines what the graph *contains* — which nodes,
+which edges, whether a linear sequence is defensible, whether lanes replace a kill chain.
+It never determines how the graph *looks*.
+
 ### Choose an output-generation mode
 
 For `deliverable: self-contained interactive HTML`, use **Mode A unless the user
 explicitly requests a script or repository workflow**.
+
+**The mode changes the implementation, never the result.** Mode A and Mode B must produce
+the same page order, the same shell, the same components, the same graph appearance and
+the same behaviour. A reader must not be able to tell which mode produced a report. Fewer
+available tools means writing more of the implementation by hand — never shipping a
+smaller, plainer, or less capable report.
 
 #### Mode A — Direct HTML artifact (default; no code tools required)
 
@@ -848,18 +1024,25 @@ explicitly requests a script or repository workflow**.
   `.html` artifact. Do not ask the user to install software, open a terminal, run Python,
   use VS Code, or assemble separate CSS/JavaScript files.
 3. If file creation is unavailable, return exactly one complete `html` fenced code block
-  containing the document from `<!doctype html>` through `</html>`. Put any usage note
-  outside the block and keep it to one sentence.
+   containing the document from `<!doctype html>` through `</html>`. Put any usage note
+   outside the block and keep it to one sentence.
 4. Inline the complete analysis, evidence register and sources. The HTML must work when
   opened directly from disk; do not leave placeholders, shortened sections, TODOs, or
   instructions that depend on a later conversion step.
-5. Validate the artifact against the quality checklist below before returning it. The
-  absence of code-execution tools is not a reason to downgrade to markdown.
+5. Implement the graph with an inline renderer that reproduces the styling contract above.
+  Hand-written SVG or canvas rendering is expected in this mode and is fully acceptable —
+  but it must still deliver the dot field, the canvas height, the rectangular evidence
+  cards, the full control set, the inspector, and the edge register.
+6. Validate the artifact against the conformance and quality checklists below before
+  returning it. The absence of code-execution tools is not a reason to downgrade to
+  markdown or to simplify the shell.
 
-#### Mode B — Reproducible Python generation (optional)
+#### Mode B — Reproducible generation in a workspace (optional)
 
 When a workspace and code execution are available, preserve the completed analysis as a
-canonical Markdown file and generate the HTML with the dependency-free companion script:
+canonical Markdown file and generate the HTML with the repository's companion build. The
+MIT-licensed `@xyflow/react` core with a layered ELK-style layout may be bundled here,
+provided every runtime asset is embedded in the finished file.
 
 ```sh
 python3 generate-interactive-report.py \
@@ -869,7 +1052,8 @@ python3 generate-interactive-report.py \
 
 Use incident-specific filenames when adapting the template. The script is an optional
 repeatability aid, not a prerequisite for receiving the report. If it is missing or cannot
-be run, fall back to Mode A without asking the user to troubleshoot tooling.
+be run, fall back to Mode A without asking the user to troubleshoot tooling, and without
+reducing the artifact.
 
 ### If markdown or a document
 Numbered sections per Part 3; tables for comparative content; callouts distinguishing
@@ -891,34 +1075,29 @@ every load-bearing claim carrying its source inline.
   relying on this document. This is not an official report, statement, or notification from
   the affected company, project, vendors, regulators, or other involved parties.` Keep the
   notice visible in print. Do not use the notice to weaken evidence or citation requirements.
-- **Use the Evidence Grid visual system for every incident generated with this template.**
-  Build an original light-first technical publication with these tokens and principles:
-  - Base paper `#ECEEEF`, primary surface `#F8F9F9`, secondary surface `#DFE3E5`, black
-    or near-black body text `#0B0C0D`, rule lines near `#B9C0C4`, and one red directional
-    signal near `#E53B32`. Teal, blue, and amber remain semantic evidence colours only.
-  - Exposed one-pixel structural rules, square or at most 2px geometry, no floating card
-    dashboard, no rounded pills, no glass effects, and little or no shadow.
-  - A restrained cross-grid or calibration field may occupy the cover's upper background.
-    It must be CSS-only, low contrast, nonessential, and absent in print/high-contrast modes.
-  - Use a local grotesk/neo-grotesk stack such as `Arial Narrow`, `Aptos Display`,
-    `Helvetica Neue`, and Arial. Use uppercase only for concise display headings, controls,
-    and indexed labels; body copy remains normal sentence case.
-  - Use red for active navigation, critical state, progress, and small directional markers,
-    never as a large reading surface. Use graphite bands only for dense interactive analysis,
-    code, or comparative metrics, always with AA-compliant off-white text.
-  - Graph nodes keep the required flat pastel type palette, but use black labels, square
-    framing, thin graph-paper calibration lines, and red selection/path emphasis.
+- **Use the Evidence Grid visual system for every incident generated with this template**,
+  exactly as specified in the fixed visual tokens and graph styling contract above. That
+  contract governs; the notes below only add rendering detail:
+  - A restrained cross-rule or calibration field may occupy the **cover's** upper
+    background. It must be CSS-only, low contrast, nonessential, and absent in print and
+    high-contrast modes. This cover treatment is separate from the graph canvas, which
+    always uses the faint dot field and never ruled lines.
+  - Use graphite bands only for dense interactive analysis, code, or comparative metrics,
+    always with AA-compliant off-white text.
+  - Graph nodes use the flat pastel type palette with black labels, square framing, and
+    red selection/path emphasis, on the faint dot canvas defined above.
   This is an incident-report design, not an imitation of any named website. Do not include
   third-party logos, images, fonts, source CSS, product copy, badges, or layout replicas.
-- Use an industrial editorial composition: squared utility header and reading-progress rule;
-  prominent AI provenance notice; a cross-grid cover with bracketed incident taxonomy,
-  compact title/summary and a four-column fact specification rail; desktop indexed contents
-  column; optional slim red evidence marker on wide screens; full-width graphite incident
-  pathway; pale relationship graph; framed chronology with explicit controls and persistent
-  scrollbar; then the applicable numbered analysis as a 140–170px section-index column plus
-  readable content column. Do not display the internal applicability decision. End with the
-  evidence register, sources, and repeated AI notice. Keep the cover compact enough that the
-  next analytical surface is visibly suggested on common desktop and mobile viewports.
+- Compose it exactly as the fixed page order and shell anatomy require: squared utility
+  header and reading-progress rule; prominent AI provenance notice; cross-rule cover with
+  bracketed incident taxonomy, compact title/summary and a four-column fact specification
+  rail; desktop indexed contents column; optional slim red evidence marker on wide screens;
+  full-width graphite incident pathway; relationship graph on its faint dot canvas; framed
+  chronology with explicit controls and persistent scrollbar; then Part 0 and the applicable
+  numbered analysis as a 140–170px section-index column plus readable content column. Do not
+  display the internal applicability decision. End with the evidence register, sources, and
+  repeated AI notice. Keep the cover compact enough that the incident pathway is visibly
+  suggested on common desktop and mobile viewports.
 - **Responsive and readable on both mobile and desktop.** Test at 390px and 1440px. Wide
   tables scroll horizontally with a visible affordance; multi-column diagrams become
   horizontal scrollers or stacks on narrow screens.
@@ -963,31 +1142,37 @@ every load-bearing claim carrying its source inline.
   cues. Avoid repetitive equal cards, ornamental blobs, constant ambient animation, parallax,
   or effects that compete with evidence.
 - **Interactive directed incident graph.** Include a stable left-to-right node-link view
-  using labelled evidence nodes and directed, labelled edges. Prefer the MIT-licensed
-  `@xyflow/react` core with a layered ELK-style layout when a build step can bundle all
-  runtime code and styles into the finished HTML. When direct one-file generation cannot
-  bundle React Flow, implement the same interaction and visual model with an inline renderer;
-  never add a CDN or network dependency. At minimum support relevant node types from: threat
+  using labelled evidence nodes and directed, labelled edges, rendered on the faint dot
+  canvas defined in the graph styling contract. In Mode B the MIT-licensed `@xyflow/react`
+  core with a layered ELK-style layout may be bundled; in Mode A implement the identical
+  interaction and visual model with an inline renderer. Either way the finished appearance
+  and behaviour must match the contract — the renderer is an implementation detail and is
+  never a reason for a different-looking graph. Never add a CDN or network dependency. At
+  minimum support relevant node types from: threat
   actor/campaign, victim, user or workload identity, host/workload, cloud/service, software,
   vulnerability, technique, infrastructure, artifact, data, control, and evidence source.
   Edge types must express the relationship (for example exploited, authenticated-as,
   executed-on, connected-to, accessed, exfiltrated-to, observed-by, or mitigated-by).
   Every node and edge must expose source IDs, confidence, first/last seen, and whether it is
   observed, reported, assessed, or disputed. Never draw an unsupported edge.
-- **Standard graph appearance.** Use compact rectangular evidence nodes with explicit type,
-  title, confidence, source IDs, and left/right connection handles. Apply a consistent,
+- **Standard graph appearance.** Use compact rectangular evidence nodes of roughly
+  170–190px by 80–95px with explicit type, title, confidence, source IDs, and left/right
+  connection handles, on the 42px faint dot canvas. Apply a consistent,
   incident-neutral flat pastel accent palette keyed by node type (for example soft pink,
   mint, pale gold, lavender, powder blue, cyan, peach, sage and cool grey). Use solid fills
   only: no radial or linear gradients, specular highlights, gloss, reflection, metallic
-  effects, 3D shading, or heavy drop shadows. Selection and immediate-path state should use
+  effects, 3D shading, or heavy drop shadows. Never render nodes as circles or spheres.
+  Selection and immediate-path state should use
   borders and edge emphasis while keeping unrelated context legible. Labels and shape/type
   metadata must preserve meaning without relying on colour.
 - The graph must provide pan/zoom, search, node-type and confidence filters, a legend,
   click/tap details, keyboard selection, direct pointer/touch dragging of individual nodes,
   empty-canvas panning, and a synchronized textual edge table for screen readers and print.
-  Provide visible `Fit`, `Full screen` / `Exit full screen`, and high-resolution `PNG`
-  controls inside the graph so they remain available in fullscreen mode. Fullscreen must
-  use the complete viewport and refit all visible nodes. PNG export must capture the whole
+  Provide visible `Zoom out`, `Zoom in`, `Fit`, `Reset`, `Full screen` / `Exit full screen`,
+  and high-resolution `PNG` controls in the graph control bar. Wheel or pinch zoom never
+  replaces the zoom buttons. Fullscreen must enclose the canvas together with its controls,
+  legend and inspector, use the complete viewport, and refit all visible nodes. PNG export
+  must capture the whole
   visible graph, not only the current viewport, exclude controls and minimap chrome, use an
   opaque theme-correct background, and be sharp enough for presentation use (at least
   2400 px wide). Keep export local and offline; do not send graph data to a service.
@@ -1032,6 +1217,40 @@ every load-bearing claim carrying its source inline.
   repeat table headers; use black text on white; control page breaks, widows, and orphans;
   and support both A4 and US Letter without clipped content.
 - **Do not use `localStorage` or `sessionStorage`** — hold state in memory.
+
+### Template conformance check before delivering
+
+Run this first. Any `no` is a defect to fix before the report is returned, regardless of
+how good the analysis is:
+
+- [ ] Does the page follow the fixed order — header, AI notice, cover, incident pathway,
+  relationship graph, chronology, Part 0, Parts I–VII, footer — with the three interactive
+  surfaces between the cover and Part 0?
+- [ ] Are all eight Part dividers (`Part 0` and `Part I`–`Part VII`) rendered, in order,
+  with their exact titles, and present in both desktop and mobile navigation?
+- [ ] Does every rendered section show its canonical number and category label alongside
+  its incident-specific title, with no renumbering and no invented category labels?
+- [ ] Is the graph canvas a faint 42px **dot** field at roughly 3–4% opacity — not a grid
+  of ruled lines, not graph paper, and not a full-strength rule colour?
+- [ ] Is the graph canvas at least 650px tall on desktop, with a right-hand evidence
+  inspector on wide screens?
+- [ ] Are graph nodes square-cornered rectangular evidence cards of roughly 170–190px by
+  80–95px on flat pastel type fills, with no circles, gradients, gloss, or 3D shading?
+- [ ] Are all nine graph controls visible — search, type filter, confidence filter,
+  `Zoom out`, `Zoom in`, `Fit`, `Reset`, `Full screen`, `PNG` — and do the controls,
+  legend and inspector remain available in fullscreen?
+- [ ] Does the cover use a bracketed taxonomy line and a four-column fact rail, and is the
+  incident pathway visibly suggested in the first viewport?
+- [ ] Is the reading layout a persistent ~250–280px navigation column plus content column,
+  with numbered sections in a 140–170px index column plus content column?
+- [ ] Does the mobile dock contain exactly Overview, Attack, Graph and Report?
+- [ ] Are the fixed colour tokens, square geometry, local grotesk stack and 16–18px body
+  copy used as specified, with red reserved for active state and directional emphasis?
+- [ ] Would a reader placing this report beside another report from this template
+  recognise them as the same publication, and be unable to tell which generation mode,
+  application, or model produced each?
+- [ ] Did the environment's tooling limits change only the implementation, never the page
+  order, components, graph appearance, or capability?
 
 ### Quality bar before delivering
 Verify each of these and fix what fails:

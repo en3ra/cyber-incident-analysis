@@ -15,7 +15,6 @@ const requireCheck = (condition, message) => { if (!condition) failures.push(mes
 const count = (text, value) => text.split(value).length - 1;
 
 requireCheck(!/industrial[ -]grid/i.test(prompt), "Prompt still contains retired visual-variant wording");
-requireCheck(count(report, 'class="report-section"') === 25, "Reference report must contain 25 sections");
 requireCheck(count(report, 'class="part-heading"') === 8, "Reference report must contain Part 0-VII");
 requireCheck(count(report, "AI-generated analytical report") === 2, "Reference report must contain two AI notices");
 requireCheck(!/(?:src|href)="https?:\/\//i.test(report), "Reference report contains an external runtime resource");

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" role="img" aria-labelledby="title desc">
+  <title id="title">Incident analysis workflow</title>
+  <desc id="desc">An incident identifier becomes evidence, analysis, an interactive report, and organization actions.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="1" stop-color="#eef2f7"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-20%" width="120%" height="150%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0f172a" flood-opacity=".12"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="300" rx="18" fill="url(#bg)"/>
+  <path d="M0 74H1200M0 226H1200" stroke="#cbd5e1" stroke-width="1"/>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle">
+    <text x="600" y="38" font-size="18" font-weight="700" fill="#111827">One prompt, from incident signal to organizational action</text>
+    <g filter="url(#shadow)">
+      <rect x="35" y="92" width="200" height="104" rx="10" fill="#111827"/>
+      <rect x="265" y="92" width="200" height="104" rx="10" fill="#1e3a5f"/>
+      <rect x="495" y="92" width="200" height="104" rx="10" fill="#b91c1c"/>
+      <rect x="725" y="92" width="200" height="104" rx="10" fill="#374151"/>
+      <rect x="955" y="92" width="210" height="104" rx="10" fill="#166534"/>
+    </g>
+    <g fill="#fff">
+      <text x="135" y="126" font-size="14" font-weight="700">IDENTIFIER</text>
+      <text x="135" y="153" font-size="13">Name, CVE, URL</text>
+      <text x="135" y="174" font-size="13">or short description</text>
+      <text x="365" y="126" font-size="14" font-weight="700">EVIDENCE</text>
+      <text x="365" y="153" font-size="13">Sources, claims,</text>
+      <text x="365" y="174" font-size="13">confidence, uncertainty</text>
+      <text x="595" y="126" font-size="14" font-weight="700">ANALYSIS</text>
+      <text x="595" y="153" font-size="13">Timeline, attack path,</text>
+      <text x="595" y="174" font-size="13">impact, and root cause</text>
+      <text x="825" y="126" font-size="14" font-weight="700">REPORT</text>
+      <text x="825" y="153" font-size="13">Interactive, printable,</text>
+      <text x="825" y="174" font-size="13">self-contained HTML</text>
+      <text x="1060" y="126" font-size="14" font-weight="700">ACTION</text>
+      <text x="1060" y="153" font-size="13">Controls, detections,</text>
+      <text x="1060" y="174" font-size="13">response, lessons learned</text>
+    </g>
+    <g fill="#64748b" font-size="28" font-weight="700">
+      <text x="250" y="153">-&gt;</text>
+      <text x="480" y="153">-&gt;</text>
+      <text x="710" y="153">-&gt;</text>
+      <text x="940" y="153">-&gt;</text>
+    </g>
+    <text x="600" y="263" font-size="13" fill="#475569">Understand what happened. Decide what changes next.</text>
+  </g>
+</svg>

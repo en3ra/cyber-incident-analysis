@@ -1,4 +1,4 @@
-# Evidence-Graded Incident Analysis
+# Cyber Security Incident Analysis
 
 A reusable prompt and reference implementation for producing rigorous, evidence-graded
 cybersecurity incident reports as self-contained interactive HTML files.

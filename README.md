@@ -50,10 +50,14 @@ defenders who need a clear answer to: **“What should we do differently now?”
 
 | ChatGPT | Claude |
 | --- | --- |
-| <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT</a> and attach the <a href="prompt/cybersecurity-incident-analysis-prompt.md" target="_blank" rel="noopener noreferrer">analysis prompt</a>. | <a href="https://claude.ai/new" target="_blank" rel="noopener noreferrer">Open Claude</a> and attach the <a href="prompt/cybersecurity-incident-analysis-prompt.md" target="_blank" rel="noopener noreferrer">analysis prompt</a>. |
+| [Open ChatGPT](https://chatgpt.com/) and attach the [analysis prompt](prompt/cybersecurity-incident-analysis-prompt.md). | [Open Claude](https://claude.ai/new) and attach the [analysis prompt](prompt/cybersecurity-incident-analysis-prompt.md). |
 
 [![Download prompt](https://img.shields.io/badge/Download_prompt-111827?style=for-the-badge&logo=markdown&logoColor=white)](prompt/cybersecurity-incident-analysis-prompt.md)
-<a href="examples/xz-utils-cve-2024-3094.html" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/View_example_report-b91c1c?style=for-the-badge&logo=html5&logoColor=white" alt="View example report"></a>
+[![View example report](https://img.shields.io/badge/View_example_report-b91c1c?style=for-the-badge&logo=html5&logoColor=white)](https://en3ra.github.io/cyber-incident-analysis/examples/xz-utils-cve-2024-3094.html)
+
+> GitHub sanitizes README links and does not allow repositories to force external links into
+> a new tab. Use Cmd/Ctrl-click or your browser's “open link in new tab” command for ChatGPT,
+> Claude, and the prompt links. The example report opens as a live GitHub Pages preview.
 
 **Evidence-graded** &nbsp; **Action-oriented** &nbsp; **Incident-adaptive** &nbsp; **Self-contained HTML** &nbsp; **Offline-ready**
 
@@ -71,9 +75,11 @@ examples/     Validated self-contained XZ incident report
 .github/      CI validation workflow
 ```
 
-Only [examples/xz-utils-cve-2024-3094.html](examples/xz-utils-cve-2024-3094.html) is needed
-to view or share the reference report. It contains its graph runtime, styles, incident data,
-PNG export support, and open-source notices inline.
+The [live XZ reference report](https://en3ra.github.io/cyber-incident-analysis/examples/xz-utils-cve-2024-3094.html)
+opens as an interactive GitHub Pages preview. The source
+[HTML file](examples/xz-utils-cve-2024-3094.html) is also available in the repository and
+contains its graph runtime, styles, incident data, PNG export support, and open-source notices
+inline.
 
 ## Development
 

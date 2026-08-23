@@ -50,10 +50,10 @@ defenders who need a clear answer to: **“What should we do differently now?”
 
 | ChatGPT | Claude |
 | --- | --- |
-| [Open ChatGPT](https://chatgpt.com/) and attach the [analysis prompt](prompt/cybersecurity-incident-analysis-prompt.md). | [Open Claude](https://claude.ai/new) and attach the [analysis prompt](prompt/cybersecurity-incident-analysis-prompt.md). |
+| <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT</a> and attach the <a href="prompt/cybersecurity-incident-analysis-prompt.md" target="_blank" rel="noopener noreferrer">analysis prompt</a>. | <a href="https://claude.ai/new" target="_blank" rel="noopener noreferrer">Open Claude</a> and attach the <a href="prompt/cybersecurity-incident-analysis-prompt.md" target="_blank" rel="noopener noreferrer">analysis prompt</a>. |
 
 [![Download prompt](https://img.shields.io/badge/Download_prompt-111827?style=for-the-badge&logo=markdown&logoColor=white)](prompt/cybersecurity-incident-analysis-prompt.md)
-[![View example report](https://img.shields.io/badge/View_example_report-b91c1c?style=for-the-badge&logo=html5&logoColor=white)](examples/xz-utils-cve-2024-3094.html)
+<a href="examples/xz-utils-cve-2024-3094.html" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/View_example_report-b91c1c?style=for-the-badge&logo=html5&logoColor=white" alt="View example report"></a>
 
 **Evidence-graded** &nbsp; **Action-oriented** &nbsp; **Incident-adaptive** &nbsp; **Self-contained HTML** &nbsp; **Offline-ready**
 

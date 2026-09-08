@@ -17,7 +17,7 @@ another site's branding, proprietary assets, exact layout, wording, or distincti
 
 **One publication, many incidents.** Every report from this template must be recognisable
 as the same product. The presentation shell — page order, the eight Part dividers, layout,
-navigation, typography, colour tokens, and the graph's surface and styling — is **fixed and
+navigation, typography, colour tokens, and the graph slot and embedding contract — is **fixed and
 identical for every incident**. What varies is the evidence, the analysis, and which
 numbered sections appear inside each Part. Part 8 states the shell as a binding contract;
 follow its concrete values exactly rather than designing an equivalent. Differences in
@@ -568,7 +568,7 @@ Two different things are being decided, and they must not be confused:
 
 | Layer | Rule | Why |
 |---|---|---|
-| **Presentation shell** — page order, Part dividers, layout grid, navigation, typography, colour tokens, outer component anatomy, graph surface and styling, print behaviour | **Fixed. Identical for every incident.** Reproduce the reference contract in Part 8 exactly. | Reports must be recognisable as the same publication and comparable side by side |
+| **Presentation shell** — page order, Part dividers, layout grid, navigation, typography, colour tokens, outer component anatomy, graph slot and embedding contract, print behaviour | **Fixed. Identical for every incident.** Reproduce the reference contract in Part 8 exactly. | Reports must be recognisable as the same publication and comparable side by side |
 | **Section inventory inside each Part** — which numbered sections appear, how many, their depth and their incident-specific titles | **Adaptive.** Driven by the evidence, per the applicability gate above | Every incident is different; forcing 25 substantive sections manufactures filler |
 | **Analytical content** — findings, evidence topology, graph nodes and edges, chronology, controls | **Adaptive.** Driven entirely by sourced evidence | The analysis must follow the facts |
 
@@ -986,13 +986,58 @@ Evidence Grid frame, and is indexed as `MAP` / Sourced relationship graph. Archi
 controls, theme, search, focus, route/reach exploration, presentation mode and export menu
 replace bespoke graph controls for this graph surface.
 
-If Archify rendering is unavailable in Mode A, do not ask the user to install tooling. Embed
-the completed Archify JSON IR in the HTML as inert `application/json`, render a dependency-
-free fallback view from that exact IR, and include a visible note in the graph inspector:
+If Archify rendering is unavailable in Mode A, do not ask the user to install tooling and do
+not omit the graph. Embed the completed Archify JSON IR in the HTML as inert
+`application/json` with `id="archify-relationship-ir"`, render a dependency-free fallback
+view from that exact IR in `#interactive-graph`, and include a visible note in the graph
+inspector with `id="archifyFallbackNotice"`:
 `Archify source included; fallback renderer used because Archify was unavailable in this
 environment.` The fallback must preserve semantics, source IDs, confidence, accessible text,
 print equivalents and offline behavior, but it is explicitly a fallback, not a new graph
-system.
+system. A self-contained HTML report that contains neither Archify-rendered output nor this
+labelled fallback is non-conformant.
+
+For no-tool environments such as ordinary ChatGPT or Claude chats, use this minimal
+Archify-compatible source shape so the fallback has concrete data to render:
+
+```json
+{
+  "schema_version": 1,
+  "diagram_type": "architecture | workflow | sequence | dataflow | lifecycle",
+  "meta": {
+    "title": "<incident> sourced relationship graph",
+    "views": [{ "id": "primary-path", "label": "Primary path", "focus": ["node-id"] }]
+  },
+  "nodes": [
+    {
+      "id": "stable-id",
+      "type": "threat-actor | victim | identity | host | service | software | vulnerability | technique | infrastructure | artifact | data | control | evidence-source",
+      "label": "Short node title",
+      "confidence": "Established | High | Contested | Unverified | Unknown",
+      "state": "observed | reported | assessed | disputed",
+      "sources": ["S1"],
+      "first_seen_utc": "unknown",
+      "last_seen_utc": "unknown"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "stable-edge-id",
+      "from": "source-node-id",
+      "to": "target-node-id",
+      "label": "observed relationship",
+      "confidence": "Established | High | Contested | Unverified | Unknown",
+      "state": "observed | reported | assessed | disputed",
+      "sources": ["S1"]
+    }
+  ],
+  "cards": [{ "title": "Graph evidence notes", "items": ["Every edge is sourced."] }]
+}
+```
+
+When a real Archify renderer is available, translate that source into the renderer's exact
+schema fields for the chosen diagram type. When it is not available, keep this source shape
+and render the fallback directly from `nodes` and `relationships`.
 
 The incident's evidence topology determines the Archify diagram type, nodes, relationships,
 views and cards. The publication shell around the graph never moves or changes identity.
@@ -1085,8 +1130,9 @@ every load-bearing claim carrying its source inline.
   header and reading-progress rule; prominent AI provenance notice; cross-rule cover with
   bracketed incident taxonomy, compact title/summary and a four-column fact specification
   rail; desktop indexed contents column; optional slim red evidence marker on wide screens;
-  full-width graphite incident pathway; relationship graph on its faint dot canvas; framed
-  chronology with explicit controls and persistent scrollbar; then Part 0 and the applicable
+  full-width graphite incident pathway; Archify-backed relationship graph or labelled
+  Archify fallback in the fixed graph frame; framed chronology with explicit controls and
+  persistent scrollbar; then Part 0 and the applicable
   numbered analysis as a 140–170px section-index column plus readable content column. Do not
   display the internal applicability decision. End with the evidence register, sources, and
   repeated AI notice. Keep the cover compact enough that the incident pathway is visibly
@@ -1199,6 +1245,9 @@ how good the analysis is:
 - [ ] Is the sourced relationship graph authored as Archify typed JSON IR and embedded in
   the report, either as Archify-rendered output or as inert source powering the labelled
   fallback renderer?
+- [ ] In ordinary ChatGPT/Claude no-tool output, does the HTML include
+  `id="archify-relationship-ir"`, `id="archifyFallbackNotice"`, and a visible graph in
+  `#interactive-graph` rather than omitting the Archify graph?
 - [ ] If Archify was available, did Archify validation/delivery pass and is the receipt or
   validation status recorded in the report metadata or evidence register?
 - [ ] If Archify was unavailable, is the fallback visibly labelled and does it render only

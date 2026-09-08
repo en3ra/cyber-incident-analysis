@@ -1,5 +1,11 @@
 # Release Notes
 
+## Unreleased
+
+- Tightened the prompt and ChatGPT Custom GPT instructions so no-tool ChatGPT/Claude output
+  must include embedded Archify relationship IR plus a visible labelled fallback graph when
+  an Archify renderer is unavailable.
+
 ## v1.1.0 - 2026-09-08
 
 - Updated the incident-analysis prompt so sourced relationship graphs are authored as

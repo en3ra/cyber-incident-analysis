@@ -5,6 +5,8 @@
 - Tightened the prompt and ChatGPT Custom GPT instructions so no-tool ChatGPT/Claude output
   must include embedded Archify relationship IR plus a visible labelled fallback graph when
   an Archify renderer is unavailable.
+- Restored the previous movable/fullscreen/export-capable graph feature floor as mandatory
+  for the fallback renderer when Archify cannot render directly.
 
 ## v1.1.0 - 2026-09-08
 

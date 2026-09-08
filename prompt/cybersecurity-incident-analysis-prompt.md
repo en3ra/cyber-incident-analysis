@@ -443,10 +443,12 @@ browser, MCP server, plugin, or execution environment is secure.
 
 #### Supply-chain, memory, and context controls
 
-- Prefer built-in, allowlisted tools and the dependency-free direct HTML mode. For Mode B,
-  use only the named local companion script after confirming it is the expected workspace
-  file; do not fetch a replacement or add dependencies. Record the model/tool versions when
-  the host exposes them, but do not claim provenance that cannot be verified.
+- Prefer built-in, allowlisted tools and the dependency-free direct HTML mode. For the
+  relationship graph, use Archify only when the host already provides the Archify skill/CLI
+  or the user has explicitly supplied an Archify workspace; do not install, update, or fetch
+  Archify during incident research without explicit approval. Record the Archify version,
+  renderer command, validation status and artifact receipt when exposed, but do not claim
+  provenance that cannot be verified.
 - Treat plugins, MCP servers, skills, models, adapters, retrieval indexes, templates, and
   tool schemas as supply-chain dependencies. Do not enable a new one during the task. If a
   host-provided dependency is necessary, constrain it to least privilege and disclose that
@@ -960,62 +962,51 @@ Use these values, not approximations of them:
 - Red marks active navigation, critical state and directional emphasis only. It is never a
   large reading surface.
 
-### Graph surface and styling contract
+### Archify graph contract
 
-The relationship graph is the component that varies most between generations, so its
-appearance is specified exactly. These values are not suggestions:
+The sourced relationship graph is Archify-backed. For every self-contained HTML report,
+author the graph as Archify typed JSON IR before rendering the page. Choose the Archify
+diagram type from the incident's evidence topology: `architecture` for component and trust
+maps, `workflow` for response or attack-stage process lanes, `sequence` for ordered calls,
+`dataflow` for exposure or exfiltration lineage, and `lifecycle` for state/recovery models.
+Do not force every incident into a node-link kill chain.
 
-- **Canvas background pattern: a faint dot field. Never a grid of lines.** Dots of
-  approximately 0.4–0.5px radius on a **42px** spacing, drawn at roughly 3–4% opacity
-  against the canvas surface — light theme dots near `rgba(30,40,55,.035)` on a `#F8F9F9`
-  canvas, dark theme dots near `rgba(255,255,255,.035)` on a near-black canvas. The
-  pattern must read as a barely perceptible
-  calibration field. If the dots are individually noticeable at normal zoom, or if the
-  background reads as graph paper, ruled squares, or a visible grid, it is wrong. Do not
-  use `--rule` or any full-strength line colour for the canvas pattern.
-- **Canvas size** — minimum 650px tall on desktop, filling the available width of the
-  graph shell. Do not ship a short or letterboxed canvas.
-- **Graph shell** — a single bordered frame containing the canvas and, on desktop, a
-  fixed evidence inspector column of roughly 320–360px on the right. The inspector stacks
-  below the canvas on narrow screens. The shell is one-pixel bordered, square, and sits on
-  the primary surface.
-- **Nodes** — compact rectangular evidence cards of roughly 170–190px by 80–95px, square
-  cornered, one-pixel bordered, on flat pastel type-keyed fills. Each card shows, in this
-  order: a small uppercase stage/type label, the node title in bold, and a footer line
-  giving confidence and source IDs. Solid fills only — no gradients, gloss, 3D shading,
-  metallic effects, or heavy drop shadows. Never use circles, spheres, or bubbles.
-- **Sequence badges** — small red circular badges with a surface-coloured ring, roughly
-  24–26px, placed on the node's upper-right corner, and applied only to nodes on a
-  defensible primary causal path.
-- **Edges** — thin muted orthogonal or smooth-step connectors with arrow markers and
-  small captions on a surface-coloured backing so labels never collide with nodes or each
-  other. Selection promotes the immediate path to the red signal at increased width while
-  leaving unrelated context legible.
-- **Controls** — a single control bar above the canvas containing, in this order: node
-  search, node-type filter, confidence filter, then `Zoom out`, `Zoom in`, `Fit`, `Reset`,
-  `Full screen`, and `PNG`. All nine are visible controls; mouse-wheel zoom is an addition
-  to the zoom buttons, never a replacement. Place `Fit`, `Full screen` and `PNG` so they
-  remain reachable in fullscreen.
-- **Legend and register** — a flat type legend beneath the controls, and a scrollable
-  textual edge register below the canvas exposing source node, relationship, target node,
-  epistemic state, confidence and evidence IDs for every visible edge.
-- **Fullscreen** must enclose the canvas *together with* its controls, legend and
-  inspector, use the whole viewport, and refit the visible nodes.
+The Archify source is the graph's canonical evidence model. It must include stable semantic
+IDs, node/relationship labels, confidence, source IDs, first/last-seen or `unknown`, and an
+observed/reported/assessed/disputed epistemic state either in the node label/sublabel, card
+items, relationship label, or accompanying edge register. Never draw an unsupported Archify
+relationship, and never let the diagram imply runtime impact, causality, attribution, or
+data exfiltration beyond the sourced evidence.
 
-The incident's evidence topology still determines what the graph *contains* — which nodes,
-which edges, whether a linear sequence is defensible, whether lanes replace a kill chain.
-It never determines how the graph *looks*.
+When an Archify skill/CLI/renderer is available, render the sourced relationship graph with
+Archify and embed the resulting self-contained graph surface into the report at
+`#interactive-graph`. Preserve the report's fixed outer shell: the graph still appears in
+the same slot, between incident pathway and chronology, inside the same one-pixel bordered
+Evidence Grid frame, and is indexed as `MAP` / Sourced relationship graph. Archify's viewer
+controls, theme, search, focus, route/reach exploration, presentation mode and export menu
+replace bespoke graph controls for this graph surface.
+
+If Archify rendering is unavailable in Mode A, do not ask the user to install tooling. Embed
+the completed Archify JSON IR in the HTML as inert `application/json`, render a dependency-
+free fallback view from that exact IR, and include a visible note in the graph inspector:
+`Archify source included; fallback renderer used because Archify was unavailable in this
+environment.` The fallback must preserve semantics, source IDs, confidence, accessible text,
+print equivalents and offline behavior, but it is explicitly a fallback, not a new graph
+system.
+
+The incident's evidence topology determines the Archify diagram type, nodes, relationships,
+views and cards. The publication shell around the graph never moves or changes identity.
 
 ### Choose an output-generation mode
 
 For `deliverable: self-contained interactive HTML`, use **Mode A unless the user
 explicitly requests a script or repository workflow**.
 
-**The mode changes the implementation, never the result.** Mode A and Mode B must produce
-the same page order, the same shell, the same components, the same graph appearance and
-the same behaviour. A reader must not be able to tell which mode produced a report. Fewer
-available tools means writing more of the implementation by hand — never shipping a
-smaller, plainer, or less capable report.
+**The mode changes the implementation, never the report shell.** Mode A and Mode B must
+produce the same page order, same section structure and same Archify-backed graph source.
+When Archify can render, both modes should embed the Archify graph output. When it cannot,
+Mode A must include the Archify JSON IR plus the fallback renderer described above, clearly
+labelled as a fallback.
 
 #### Mode A — Direct HTML artifact (default; no code tools required)
 
@@ -1029,10 +1020,10 @@ smaller, plainer, or less capable report.
 4. Inline the complete analysis, evidence register and sources. The HTML must work when
   opened directly from disk; do not leave placeholders, shortened sections, TODOs, or
   instructions that depend on a later conversion step.
-5. Implement the graph with an inline renderer that reproduces the styling contract above.
-  Hand-written SVG or canvas rendering is expected in this mode and is fully acceptable —
-  but it must still deliver the dot field, the canvas height, the rectangular evidence
-  cards, the full control set, the inspector, and the edge register.
+5. Author the sourced relationship graph as Archify typed JSON IR. If Archify rendering is
+  available, embed the Archify-rendered graph. If it is unavailable, embed the Archify JSON
+  IR and render the dependency-free fallback view from that same IR, with a visible fallback
+  note in the graph inspector.
 6. Validate the artifact against the conformance and quality checklists below before
   returning it. The absence of code-execution tools is not a reason to downgrade to
   markdown or to simplify the shell.
@@ -1040,13 +1031,16 @@ smaller, plainer, or less capable report.
 #### Mode B — Reproducible generation in a workspace (optional)
 
 When a workspace and code execution are available, preserve the completed analysis as a
-canonical Markdown file and generate the HTML with the repository's companion build. The
-MIT-licensed `@xyflow/react` core with a layered ELK-style layout may be bundled here,
-provided every runtime asset is embedded in the finished file.
+canonical Markdown file, preserve the Archify graph source as incident-specific JSON, run
+Archify validation/delivery for that graph, and generate the final report with the
+repository's companion build or direct HTML assembly. Do not use another bespoke graph
+runtime for the sourced relationship graph unless Archify is unavailable and
+the Mode A fallback is explicitly labelled.
 
 ```sh
 python3 generate-interactive-report.py \
   --source <incident-slug>-incident-analysis.md \
+  --archify-graph <incident-slug>-relationship.architecture.json \
   --output <incident-slug>-incident-analysis.html
 ```
 
@@ -1076,16 +1070,15 @@ every load-bearing claim carrying its source inline.
   the affected company, project, vendors, regulators, or other involved parties.` Keep the
   notice visible in print. Do not use the notice to weaken evidence or citation requirements.
 - **Use the Evidence Grid visual system for every incident generated with this template**,
-  exactly as specified in the fixed visual tokens and graph styling contract above. That
+  exactly as specified in the fixed visual tokens and Archify graph contract above. That
   contract governs; the notes below only add rendering detail:
   - A restrained cross-rule or calibration field may occupy the **cover's** upper
     background. It must be CSS-only, low contrast, nonessential, and absent in print and
-    high-contrast modes. This cover treatment is separate from the graph canvas, which
-    always uses the faint dot field and never ruled lines.
+    high-contrast modes. This cover treatment is separate from the Archify graph surface.
   - Use graphite bands only for dense interactive analysis, code, or comparative metrics,
     always with AA-compliant off-white text.
-  - Graph nodes use the flat pastel type palette with black labels, square framing, and
-    red selection/path emphasis, on the faint dot canvas defined above.
+  - The sourced relationship graph uses Archify output when available, embedded inside the
+    fixed Evidence Grid graph frame and carrying the incident's confidence and source IDs.
   This is an incident-report design, not an imitation of any named website. Do not include
   third-party logos, images, fonts, source CSS, product copy, badges, or layout replicas.
 - Compose it exactly as the fixed page order and shell anatomy require: squared utility
@@ -1141,47 +1134,20 @@ every load-bearing claim carrying its source inline.
   motion such as finite staged entrances, path emphasis, progress response and live status
   cues. Avoid repetitive equal cards, ornamental blobs, constant ambient animation, parallax,
   or effects that compete with evidence.
-- **Interactive directed incident graph.** Include a stable left-to-right node-link view
-  using labelled evidence nodes and directed, labelled edges, rendered on the faint dot
-  canvas defined in the graph styling contract. In Mode B the MIT-licensed `@xyflow/react`
-  core with a layered ELK-style layout may be bundled; in Mode A implement the identical
-  interaction and visual model with an inline renderer. Either way the finished appearance
-  and behaviour must match the contract — the renderer is an implementation detail and is
-  never a reason for a different-looking graph. Never add a CDN or network dependency. At
-  minimum support relevant node types from: threat
+- **Interactive directed incident graph.** Include an Archify-backed relationship graph at
+  `#interactive-graph`. At minimum support relevant semantic entities from: threat
   actor/campaign, victim, user or workload identity, host/workload, cloud/service, software,
   vulnerability, technique, infrastructure, artifact, data, control, and evidence source.
-  Edge types must express the relationship (for example exploited, authenticated-as,
-  executed-on, connected-to, accessed, exfiltrated-to, observed-by, or mitigated-by).
-  Every node and edge must expose source IDs, confidence, first/last seen, and whether it is
-  observed, reported, assessed, or disputed. Never draw an unsupported edge.
-- **Standard graph appearance.** Use compact rectangular evidence nodes of roughly
-  170–190px by 80–95px with explicit type, title, confidence, source IDs, and left/right
-  connection handles, on the 42px faint dot canvas. Apply a consistent,
-  incident-neutral flat pastel accent palette keyed by node type (for example soft pink,
-  mint, pale gold, lavender, powder blue, cyan, peach, sage and cool grey). Use solid fills
-  only: no radial or linear gradients, specular highlights, gloss, reflection, metallic
-  effects, 3D shading, or heavy drop shadows. Never render nodes as circles or spheres.
-  Selection and immediate-path state should use
-  borders and edge emphasis while keeping unrelated context legible. Labels and shape/type
-  metadata must preserve meaning without relying on colour.
-- The graph must provide pan/zoom, search, node-type and confidence filters, a legend,
-  click/tap details, keyboard selection, direct pointer/touch dragging of individual nodes,
-  empty-canvas panning, and a synchronized textual edge table for screen readers and print.
-  Provide visible `Zoom out`, `Zoom in`, `Fit`, `Reset`, `Full screen` / `Exit full screen`,
-  and high-resolution `PNG` controls in the graph control bar. Wheel or pinch zoom never
-  replaces the zoom buttons. Fullscreen must enclose the canvas together with its controls,
-  legend and inspector, use the complete viewport, and refit all visible nodes. PNG export
-  must capture the whole
-  visible graph, not only the current viewport, exclude controls and minimap chrome, use an
-  opaque theme-correct background, and be sharp enough for presentation use (at least
-  2400 px wide). Keep export local and offline; do not send graph data to a service.
-  Hover may preview a compact tooltip, but tap/click must provide the same information.
-  Smooth-step or orthogonal edges must follow moved nodes live. Reset must restore authored
-  node positions, zoom, filters, visible edges, the textual edge register, and the default
-  selection. Use a stable layered initial layout that reads from initiating actor or entry
-  condition through execution, impact, detection, and response. Do not make force animation
-  necessary to understand it, and disable nonessential motion under `prefers-reduced-motion`.
+  Relationship labels must express the actual sourced relationship (for example exploited,
+  authenticated-as, executed-on, connected-to, accessed, exfiltrated-to, observed-by, or
+  mitigated-by). Every node and relationship must expose source IDs, confidence, first/last
+  seen or `unknown`, and whether it is observed, reported, assessed, or disputed.
+- **Archify interaction.** When Archify is available, preserve its generated viewer
+  affordances for search, focus, route/reach exploration, semantic lens/legend, theme,
+  presentation mode and export. When the fallback renderer is used, provide equivalent
+  accessible search/filter, detail inspection, edge register, print table and offline PNG or
+  SVG export where the environment permits. Keep all graph data and runtime assets inline;
+  never add a CDN or network dependency.
 - Add sequence badges only when evidence supports a defensible primary causal or temporal
   path. Number that path from start to outcome and define each badge in accessible text.
   Do not number evidence, context, control, detection, response, or counterfactual nodes as
@@ -1230,15 +1196,15 @@ how good the analysis is:
   with their exact titles, and present in both desktop and mobile navigation?
 - [ ] Does every rendered section show its canonical number and category label alongside
   its incident-specific title, with no renumbering and no invented category labels?
-- [ ] Is the graph canvas a faint 42px **dot** field at roughly 3–4% opacity — not a grid
-  of ruled lines, not graph paper, and not a full-strength rule colour?
-- [ ] Is the graph canvas at least 650px tall on desktop, with a right-hand evidence
-  inspector on wide screens?
-- [ ] Are graph nodes square-cornered rectangular evidence cards of roughly 170–190px by
-  80–95px on flat pastel type fills, with no circles, gradients, gloss, or 3D shading?
-- [ ] Are all nine graph controls visible — search, type filter, confidence filter,
-  `Zoom out`, `Zoom in`, `Fit`, `Reset`, `Full screen`, `PNG` — and do the controls,
-  legend and inspector remain available in fullscreen?
+- [ ] Is the sourced relationship graph authored as Archify typed JSON IR and embedded in
+  the report, either as Archify-rendered output or as inert source powering the labelled
+  fallback renderer?
+- [ ] If Archify was available, did Archify validation/delivery pass and is the receipt or
+  validation status recorded in the report metadata or evidence register?
+- [ ] If Archify was unavailable, is the fallback visibly labelled and does it render only
+  the embedded Archify IR without inventing nodes, relationships, controls or claims?
+- [ ] Does the graph expose source IDs, confidence, first/last-seen or `unknown`, and
+  observed/reported/assessed/disputed state for every node and relationship?
 - [ ] Does the cover use a bracketed taxonomy line and a four-column fact rail, and is the
   incident pathway visibly suggested in the first viewport?
 - [ ] Is the reading layout a persistent ~250–280px navigation column plus content column,
@@ -1249,8 +1215,8 @@ how good the analysis is:
 - [ ] Would a reader placing this report beside another report from this template
   recognise them as the same publication, and be unable to tell which generation mode,
   application, or model produced each?
-- [ ] Did the environment's tooling limits change only the implementation, never the page
-  order, components, graph appearance, or capability?
+- [ ] Did the environment's tooling limits change only whether Archify rendered directly or
+  the labelled fallback rendered the same Archify IR, never the page order or evidence model?
 
 ### Quality bar before delivering
 Verify each of these and fix what fails:

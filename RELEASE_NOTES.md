@@ -1,6 +1,6 @@
 # Release Notes
 
-## Unreleased
+## v1.1.0 - 2026-09-08
 
 - Updated the incident-analysis prompt so sourced relationship graphs are authored as
   Archify typed JSON IR and rendered with Archify when available.

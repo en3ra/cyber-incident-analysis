@@ -7,6 +7,8 @@
   an Archify renderer is unavailable.
 - Restored the previous movable/fullscreen/export-capable graph feature floor as mandatory
   for the fallback renderer when Archify cannot render directly.
+- Refreshed the packaged Claude skill so its embedded prompt and HTML scaffold use the same
+  Archify relationship IR marker and interactive fallback contract.
 
 ## v1.1.0 - 2026-09-08
 

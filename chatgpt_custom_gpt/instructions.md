@@ -30,14 +30,6 @@ If public evidence is too thin for a responsible report, return the template's N
 
 ## Conversation Starters
 
-```text
-Analyze xz-utils CVE-2024-3094.
-```
-
-```text
-Analyze the 2023 MOVEit Transfer exploitation campaign.
-```
-
-```text
-Analyze this advisory: <paste URL>
-```
+- Analyze xz-utils CVE-2024-3094.
+- Analyze the 2023 MOVEit Transfer exploitation campaign.
+- Analyze this advisory: <paste URL>

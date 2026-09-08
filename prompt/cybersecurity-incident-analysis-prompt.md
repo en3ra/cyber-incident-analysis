@@ -1040,7 +1040,7 @@ the Mode A fallback is explicitly labelled.
 ```sh
 python3 generate-interactive-report.py \
   --source <incident-slug>-incident-analysis.md \
-  --archify-graph <incident-slug>-relationship.architecture.json \
+  --archify-graph <incident-slug>-relationship.<type>.json \
   --output <incident-slug>-incident-analysis.html
 ```
 

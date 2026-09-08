@@ -987,15 +987,20 @@ controls, theme, search, focus, route/reach exploration, presentation mode and e
 replace bespoke graph controls for this graph surface.
 
 If Archify rendering is unavailable in Mode A, do not ask the user to install tooling and do
-not omit the graph. Embed the completed Archify JSON IR in the HTML as inert
-`application/json` with `id="archify-relationship-ir"`, render a dependency-free fallback
-view from that exact IR in `#interactive-graph`, and include a visible note in the graph
-inspector with `id="archifyFallbackNotice"`:
+not omit or downgrade the graph. Embed the completed Archify JSON IR in the HTML as inert
+`application/json` with `id="archify-relationship-ir"`, render the previous fully
+interactive dependency-free graph fallback from that exact IR in `#interactive-graph`, and
+include a visible note in the graph inspector with `id="archifyFallbackNotice"`:
 `Archify source included; fallback renderer used because Archify was unavailable in this
 environment.` The fallback must preserve semantics, source IDs, confidence, accessible text,
 print equivalents and offline behavior, but it is explicitly a fallback, not a new graph
-system. A self-contained HTML report that contains neither Archify-rendered output nor this
-labelled fallback is non-conformant.
+system. It must also preserve the old interactive feature floor: visible search, node-type
+filter, confidence filter, `Zoom out`, `Zoom in`, `Fit`, `Reset`, `Full screen`, and `PNG`
+controls; mouse or touch panning; wheel, pinch or button zoom; draggable nodes where the
+renderer supports them; click/tap inspector details; a legend; and a synchronized textual
+edge register. A static SVG, screenshot, image map, or graph with only search/fit/export is
+non-conformant. A self-contained HTML report that contains neither Archify-rendered output
+nor this labelled fully interactive fallback is non-conformant.
 
 For no-tool environments such as ordinary ChatGPT or Claude chats, use this minimal
 Archify-compatible source shape so the fallback has concrete data to render:
@@ -1037,7 +1042,7 @@ Archify-compatible source shape so the fallback has concrete data to render:
 
 When a real Archify renderer is available, translate that source into the renderer's exact
 schema fields for the chosen diagram type. When it is not available, keep this source shape
-and render the fallback directly from `nodes` and `relationships`.
+and render the fully interactive fallback directly from `nodes` and `relationships`.
 
 The incident's evidence topology determines the Archify diagram type, nodes, relationships,
 views and cards. The publication shell around the graph never moves or changes identity.
@@ -1050,8 +1055,8 @@ explicitly requests a script or repository workflow**.
 **The mode changes the implementation, never the report shell.** Mode A and Mode B must
 produce the same page order, same section structure and same Archify-backed graph source.
 When Archify can render, both modes should embed the Archify graph output. When it cannot,
-Mode A must include the Archify JSON IR plus the fallback renderer described above, clearly
-labelled as a fallback.
+Mode A must include the Archify JSON IR plus the fully interactive fallback renderer
+described above, clearly labelled as a fallback.
 
 #### Mode A — Direct HTML artifact (default; no code tools required)
 
@@ -1067,8 +1072,8 @@ labelled as a fallback.
   instructions that depend on a later conversion step.
 5. Author the sourced relationship graph as Archify typed JSON IR. If Archify rendering is
   available, embed the Archify-rendered graph. If it is unavailable, embed the Archify JSON
-  IR and render the dependency-free fallback view from that same IR, with a visible fallback
-  note in the graph inspector.
+  IR and render the previous fully interactive dependency-free graph from that same IR, with
+  a visible fallback note in the graph inspector. Do not replace the graph with a static SVG.
 6. Validate the artifact against the conformance and quality checklists below before
   returning it. The absence of code-execution tools is not a reason to downgrade to
   markdown or to simplify the shell.
@@ -1191,9 +1196,9 @@ every load-bearing claim carrying its source inline.
 - **Archify interaction.** When Archify is available, preserve its generated viewer
   affordances for search, focus, route/reach exploration, semantic lens/legend, theme,
   presentation mode and export. When the fallback renderer is used, provide equivalent
-  accessible search/filter, detail inspection, edge register, print table and offline PNG or
-  SVG export where the environment permits. Keep all graph data and runtime assets inline;
-  never add a CDN or network dependency.
+  visible search/filter, button zoom, fit, reset, fullscreen, local PNG export, pan/zoom,
+  click/tap detail inspection, edge register and print table. Keep all graph data and runtime
+  assets inline; never add a CDN or network dependency.
 - Add sequence badges only when evidence supports a defensible primary causal or temporal
   path. Number that path from start to outcome and define each badge in accessible text.
   Do not number evidence, context, control, detection, response, or counterfactual nodes as
@@ -1248,6 +1253,9 @@ how good the analysis is:
 - [ ] In ordinary ChatGPT/Claude no-tool output, does the HTML include
   `id="archify-relationship-ir"`, `id="archifyFallbackNotice"`, and a visible graph in
   `#interactive-graph` rather than omitting the Archify graph?
+- [ ] If the fallback renderer was used, does it preserve the old interactive feature floor:
+  search, node-type filter, confidence filter, zoom out, zoom in, fit, reset, fullscreen,
+  PNG export, pan/zoom, inspector details, legend and edge register?
 - [ ] If Archify was available, did Archify validation/delivery pass and is the receipt or
   validation status recorded in the report metadata or evidence register?
 - [ ] If Archify was unavailable, is the fallback visibly labelled and does it render only

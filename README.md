@@ -52,6 +52,10 @@ defenders who need a clear answer to: **“What should we do differently now?”
 | --- | --- |
 | [Open ChatGPT](https://chatgpt.com/) and attach the [analysis prompt](prompt/cybersecurity-incident-analysis-prompt.md). | [Open Claude](https://claude.ai/new) and attach the [analysis prompt](prompt/cybersecurity-incident-analysis-prompt.md). |
 
+For repeat ChatGPT use, create a Custom GPT once using the
+[ChatGPT Custom GPT setup](chatgpt_custom_gpt/README.md). Upload the analysis prompt as the
+GPT's Knowledge file, then start future chats with only the incident identifier.
+
 [![Download prompt](https://img.shields.io/badge/Download_prompt-111827?style=for-the-badge&logo=markdown&logoColor=white)](prompt/cybersecurity-incident-analysis-prompt.md)
 [![View example report](https://img.shields.io/badge/View_example_report-b91c1c?style=for-the-badge&logo=html5&logoColor=white)](https://en3ra.github.io/cyber-incident-analysis/examples/xz-utils-cve-2024-3094.html)
 
@@ -69,6 +73,7 @@ defenders who need a clear answer to: **“What should we do differently now?”
 
 ```text
 prompt/       Latest reusable incident-analysis prompt
+chatgpt_custom_gpt/ Reusable ChatGPT Custom GPT setup
 src/graph/    React Flow reference graph source and styles
 scripts/      Deterministic bundle embedding and validation
 docs/         Workflow graphic and Archify repository architecture diagram

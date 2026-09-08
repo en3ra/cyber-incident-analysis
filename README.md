@@ -52,6 +52,15 @@ defenders who need a clear answer to: **“What should we do differently now?”
 | --- | --- |
 | [Open ChatGPT](https://chatgpt.com/) and attach the [analysis prompt](prompt/cybersecurity-incident-analysis-prompt.md). | [Open Claude](https://claude.ai/new) and attach the [analysis prompt](prompt/cybersecurity-incident-analysis-prompt.md). |
 
+For repeat ChatGPT use, create a Custom GPT once using the
+[ChatGPT Custom GPT setup](chatgpt_custom_gpt/README.md). Upload the analysis prompt as the
+GPT's Knowledge file, then start future chats with only the incident identifier.
+
+For repeat Claude use, upload the packaged
+[Claude skill](claude_skill/incident-analysis.skill) to Claude's Skills/Capabilities area
+where available. The skill contains the incident-analysis workflow, reference material,
+HTML scaffold, validation helper, and Archify-backed graph instructions.
+
 [![Download prompt](https://img.shields.io/badge/Download_prompt-111827?style=for-the-badge&logo=markdown&logoColor=white)](prompt/cybersecurity-incident-analysis-prompt.md)
 [![View example report](https://img.shields.io/badge/View_example_report-b91c1c?style=for-the-badge&logo=html5&logoColor=white)](https://en3ra.github.io/cyber-incident-analysis/examples/xz-utils-cve-2024-3094.html)
 
@@ -69,17 +78,26 @@ defenders who need a clear answer to: **“What should we do differently now?”
 
 ```text
 prompt/       Latest reusable incident-analysis prompt
+chatgpt_custom_gpt/ Reusable ChatGPT Custom GPT setup
+claude_skill/ Packaged Claude skill for reusable incident analysis
 src/graph/    React Flow reference graph source and styles
 scripts/      Deterministic bundle embedding and validation
+docs/         Workflow graphic and Archify repository architecture diagram
 examples/     Validated self-contained XZ incident report
 .github/      CI validation workflow
 ```
+
+See [RELEASE_NOTES.md](RELEASE_NOTES.md) for current unreleased changes.
 
 The [live XZ reference report](https://en3ra.github.io/cyber-incident-analysis/examples/xz-utils-cve-2024-3094.html)
 opens as an interactive GitHub Pages preview. The source
 [HTML file](examples/xz-utils-cve-2024-3094.html) is also available in the repository and
 contains its graph runtime, styles, incident data, PNG export support, and open-source notices
 inline.
+
+The repository architecture is also available as an Archify diagram:
+[source JSON](docs/evidence-graded-incident-analysis.architecture.json) and
+[self-contained HTML](docs/evidence-graded-incident-analysis.architecture.html).
 
 ## Development
 

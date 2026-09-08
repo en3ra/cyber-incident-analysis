@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Evidence-Graded Incident Analysis",
+    "subtitle": "Prompt-to-report workspace architecture",
+    "viewBox": [1180, 860],
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "report-generation",
+        "label": "Report generation path",
+        "focus": ["user", "prompt-template", "assistant", "html-report"]
+      },
+      {
+        "id": "graph-bundle",
+        "label": "Graph bundle path",
+        "focus": ["graph-source", "esbuild", "embed-script", "reference-report"]
+      },
+      {
+        "id": "validation",
+        "label": "Validation path",
+        "focus": ["package-scripts", "validator", "notices"]
+      }
+    ]
+  },
+  "components": [
+    { "id": "user", "type": "external", "label": "Analyst", "sublabel": "Incident ID and review", "pos": [40, 120], "size": [135, 70] },
+    { "id": "assistant", "type": "cloud", "label": "AI Assistant", "sublabel": "Research host", "pos": [245, 120], "size": [150, 76] },
+    { "id": "prompt-template", "type": "security", "label": "Analysis Prompt", "sublabel": "Evidence and shell rules", "pos": [245, 325], "size": [155, 78] },
+    { "id": "html-report", "type": "frontend", "label": "HTML Report", "sublabel": "Generated offline artifact", "pos": [470, 130], "size": [160, 78] },
+    { "id": "reference-report", "type": "frontend", "label": "XZ Reference", "sublabel": "Validated example", "pos": [700, 130], "size": [160, 78] },
+    { "id": "graph-source", "type": "backend", "label": "React Graph", "sublabel": "src/graph runtime", "pos": [470, 390], "size": [160, 78] },
+    { "id": "esbuild", "type": "messagebus", "label": "Graph Bundler", "sublabel": "build:graph", "pos": [700, 390], "size": [150, 72] },
+    { "id": "embed-script", "type": "backend", "label": "Embed Script", "sublabel": "Bundle markers", "pos": [930, 390], "size": [150, 72] },
+    { "id": "package-scripts", "type": "backend", "label": "Package Scripts", "sublabel": "Build and validate", "pos": [470, 650], "size": [160, 78] },
+    { "id": "validator", "type": "security", "label": "Validator", "sublabel": "Contract checks", "pos": [700, 650], "size": [150, 72] },
+    { "id": "notices", "type": "database", "label": "Third-party Notices", "sublabel": "Dependency evidence", "pos": [930, 650], "size": [150, 72] }
+  ],
+  "boundaries": [
+    { "kind": "security-group", "label": "User interaction boundary", "wraps": ["user", "assistant"] },
+    { "kind": "security-group", "label": "Prompt contract", "wraps": ["prompt-template", "html-report"] },
+    { "kind": "region", "label": "Workspace build pipeline", "wraps": ["graph-source", "esbuild", "embed-script", "package-scripts", "validator", "notices", "reference-report"] }
+  ],
+  "connections": [
+    { "id": "user-to-assistant", "from": "user", "to": "assistant", "label": "supplies incident identifier", "fromSide": "right", "toSide": "left", "labelAt": [210, 214] },
+    { "id": "prompt-guides-assistant", "from": "prompt-template", "to": "assistant", "label": "sets evidence and shell rules", "fromSide": "top", "toSide": "bottom", "labelAt": [355, 258] },
+    { "id": "assistant-produces-report", "from": "assistant", "to": "html-report", "label": "generates offline artifact", "fromSide": "right", "toSide": "left", "labelAt": [430, 224] },
+    { "id": "report-uses-reference", "from": "html-report", "to": "reference-report", "label": "follows fixed shell", "fromSide": "right", "toSide": "left", "labelAt": [670, 224] },
+    { "id": "graph-source-to-bundler", "from": "graph-source", "to": "esbuild", "label": "bundled by", "fromSide": "right", "toSide": "left", "labelAt": [665, 482] },
+    { "id": "bundler-to-embedder", "from": "esbuild", "to": "embed-script", "label": "emits CSS and JS", "fromSide": "right", "toSide": "left", "labelAt": [895, 480] },
+    { "id": "embedder-to-reference", "from": "embed-script", "to": "reference-report", "label": "inlines graph runtime", "fromSide": "top", "toSide": "right", "via": [[1005, 330], [1090, 330], [1090, 169]], "labelAt": [1095, 280] },
+    { "id": "scripts-run-bundler", "from": "package-scripts", "to": "esbuild", "label": "runs build:graph", "fromSide": "top", "toSide": "bottom", "labelAt": [670, 560] },
+    { "id": "scripts-run-validator", "from": "package-scripts", "to": "validator", "label": "runs validate", "fromSide": "right", "toSide": "left", "labelAt": [665, 742] },
+    { "id": "validator-checks-notices", "from": "validator", "to": "notices", "label": "matches bundled packages", "fromSide": "right", "toSide": "left", "labelAt": [895, 742] }
+  ],
+  "cards": [
+    {
+      "title": "Primary path",
+      "dot": "cyan",
+      "items": [
+        "Analyst supplies one incident identifier",
+        "Prompt constrains evidence handling and report shell",
+        "Assistant produces a standalone HTML report for review"
+      ]
+    },
+    {
+      "title": "Build path",
+      "dot": "emerald",
+      "items": [
+        "React graph source owns the reference graph runtime",
+        "esbuild bundles CSS and JavaScript",
+        "Embed script writes the bundle between preserved HTML markers"
+      ]
+    },
+    {
+      "title": "Validation path",
+      "dot": "amber",
+      "items": [
+        "Validator checks prompt wording and fixed Part dividers",
+        "Validator checks AI notices and offline runtime behavior",
+        "Validator matches bundled packages to third-party notices"
+      ]
+    }
+  ]
+}

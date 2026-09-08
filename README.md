@@ -71,6 +71,7 @@ defenders who need a clear answer to: **“What should we do differently now?”
 prompt/       Latest reusable incident-analysis prompt
 src/graph/    React Flow reference graph source and styles
 scripts/      Deterministic bundle embedding and validation
+docs/         Workflow graphic and Archify repository architecture diagram
 examples/     Validated self-contained XZ incident report
 .github/      CI validation workflow
 ```
@@ -80,6 +81,10 @@ opens as an interactive GitHub Pages preview. The source
 [HTML file](examples/xz-utils-cve-2024-3094.html) is also available in the repository and
 contains its graph runtime, styles, incident data, PNG export support, and open-source notices
 inline.
+
+The repository architecture is also available as an Archify diagram:
+[source JSON](docs/evidence-graded-incident-analysis.architecture.json) and
+[self-contained HTML](docs/evidence-graded-incident-analysis.architecture.html).
 
 ## Development
 

@@ -1,6 +1,6 @@
 {
   "name": "evidence-graded-incident-analysis",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Evidence-graded cybersecurity incident analysis prompt and self-contained interactive report reference.",
   "scripts": {

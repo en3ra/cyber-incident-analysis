@@ -1,10 +1,19 @@
 # Release Notes
 
-## Unreleased
+## v1.2.0 - 2026-09-10
 
-- Tightened the prompt and ChatGPT Custom GPT instructions so no-tool ChatGPT/Claude output
-  must include embedded Archify relationship IR plus a visible labelled fallback graph when
-  an Archify renderer is unavailable.
+- Added a factual short `Incident in brief` within the original cover, with direct routes
+  across situation/scope, chronology, root cause, impact, accountability, controls/recovery,
+  governance/ownership, and evidence/lessons.
+- Promoted one shared report scaffold for ChatGPT and Claude, tightened typography and
+  responsive information density, and made the four incident facts fully visible at narrow
+  mobile widths.
+- Expanded WCAG 2.2 AA behavior for landmarks, skip links, keyboard focus, 44px targets,
+  table captions, zoom/reflow, reduced motion, and high-contrast modes.
+- Restored the fixed Sections 01–25 report contract while keeping section depth adaptive to
+  evidence and requiring explicit `unknown externally` or `not applicable` boundaries.
+- Tightened the prompt so no-tool ChatGPT/Claude output must include embedded Archify
+  relationship IR plus a visible labelled fallback graph when an Archify renderer is unavailable.
 - Restored the previous movable/fullscreen/export-capable graph feature floor as mandatory
   for the fallback renderer when Archify cannot render directly.
 - Refreshed the packaged Claude skill so its embedded prompt and HTML scaffold use the same

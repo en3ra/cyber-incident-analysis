@@ -1,0 +1,1381 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>{{INCIDENT_NAME}} — Incident Analysis</title>
+<!--
+  ==========================================================================
+  EVIDENCE GRID SCAFFOLD
+  --------------------------------------------------------------------------
+  Replace content; keep structure. See references/visual-system.md.
+
+  RULES THAT THE VALIDATOR ENFORCES
+   1. No web fonts, no CDN, no network request after opening.
+   2. No localStorage / sessionStorage. State lives in memory.
+   3. AI notice at top, repeated in footer, retained in print.
+   4. Nav anchors must match rendered section ids exactly.
+   5. Every table wrapped in .tw so it scrolls on mobile.
+   6. Never innerHTML incident-derived strings — use textContent / el().
+
+  STRUCTURE (fixed page order — see references/visual-system.md; do not reorder)
+   - Utility header + progress rule
+   - AI provenance notice
+   - Cover / compact overview: factual brief, 4-column fact rail, management quick routes
+   - Instruments: #interactive-attack, #interactive-graph, #interactive-timeline
+     (always between the cover and Part 0, never after it, never interleaved)
+   - Part 0: document control + incident snapshot (opens the numbered report)
+   - Numbered analysis: section-index column + content column
+   - Evidence register, sources, repeated AI notice
+   - Mobile bottom dock: Overview / Attack / Graph / Report
+
+  THE SOURCED RELATIONSHIP GRAPH IS ARCHIFY-BACKED
+   Author it as Archify typed JSON IR first (#archify-relationship-ir, near INSTRUMENT B below) and
+   pick the diagram type from evidence topology: architecture / workflow / sequence /
+   dataflow / lifecycle. Embed Archify's own rendered output at #interactive-graph when
+   Archify is available in this environment; otherwise the inline SVG renderer built into
+   this scaffold (search "Archify fallback renderer" further down) reads the same node/edge
+   facts and is the labelled fallback — keep the fallback-note sentence in the graph
+   figcaption only when it is actually acting as a fallback.
+  ==========================================================================
+-->
+<style>
+:root{
+  --paper:#ECEEEF; --surface:#F8F9F9; --surface2:#DFE3E5;
+  --ink:#0B0C0D; --ink2:#3C4245; --ink3:#6A7276;
+  --rule:#B9C0C4; --rule2:#D3D8DA;
+  --red:#E53B32; --red-ink:#B3241D;
+  --teal:#0E6B60; --blue:#1F4E86; --amber:#8A5A12;
+  --teal-bg:#E4EFED; --blue-bg:#E6ECF4; --amber-bg:#F6EFE1; --red-bg:#F9E9E8;
+  --graphite:#141719; --graphite2:#1E2326; --graphite3:#333B40;
+  --gink:#F2F5F6; --gink2:#B9C3C8; --gink3:#8B979D;
+  --sans:"Arial Narrow","Aptos Display","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+  --text:"Aptos","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  --idx:150px;
+  --dock:0px;
+}
+[data-theme="dark"]{
+  --paper:#0E1113; --surface:#161A1C; --surface2:#1F2528;
+  --ink:#EDF1F2; --ink2:#BEC7CB; --ink3:#8C979C;
+  --rule:#2E3639; --rule2:#242B2E;
+  --red:#FF6257; --red-ink:#FF8078;
+  --teal:#4ECFB8; --blue:#7FAEEA; --amber:#E3B355;
+  --teal-bg:#0F2320; --blue-bg:#111A26; --amber-bg:#231C0D; --red-bg:#261315;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}
+  *{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--text);font-size:17px;line-height:1.62;
+  -webkit-font-smoothing:antialiased;padding-bottom:var(--dock)}
+h1,h2,h3,h4{font-family:var(--sans);font-weight:700;line-height:1.15;margin:0;letter-spacing:0}
+p{margin:0 0 15px;max-width:70ch}
+ul,ol{margin:0 0 15px;padding-left:20px;max-width:70ch}
+li{margin-bottom:6px}
+a{color:var(--blue);text-underline-offset:2px}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+code,kbd,samp{font-family:var(--mono);font-size:.87em;background:var(--surface2);padding:1px 5px;
+  font-variant-numeric:tabular-nums;word-break:break-word}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:8px;top:8px;z-index:200;background:var(--surface);color:var(--ink);
+  padding:10px 14px;border:1px solid var(--ink);min-height:44px;display:flex;align-items:center}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- utility header ---------- */
+.util{position:sticky;top:0;z-index:60;background:var(--paper);border-bottom:1px solid var(--rule)}
+.util-in{display:flex;align-items:center;gap:10px;padding:8px clamp(12px,3vw,26px);min-height:46px}
+.util-id{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink3);flex:1;min-width:0;line-height:1.4}
+.util-id b{color:var(--ink);font-weight:600}
+.btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--surface);color:var(--ink2);border:1px solid var(--rule);
+  padding:9px 12px;cursor:pointer;min-height:44px;border-radius:0}
+.btn:hover{border-color:var(--ink);color:var(--ink)}
+.btn[aria-pressed="true"],.btn.on{border-color:var(--red);color:var(--red-ink)}
+.prog{height:2px;background:var(--rule2)}
+.prog i{display:block;height:100%;width:0;background:var(--red)}
+
+/* ---------- AI notice ---------- */
+.ai-notice{border-top:2px solid var(--red);border-bottom:1px solid var(--rule);
+  background:var(--red-bg);padding:11px clamp(12px,3vw,26px)}
+.ai-notice p{margin:0;max-width:none;font-size:13.5px;line-height:1.5;color:var(--ink)}
+.ai-notice b{font-family:var(--sans);text-transform:uppercase;letter-spacing:.08em;font-size:11px;
+  display:block;margin-bottom:3px;color:var(--red-ink)}
+
+/* ---------- cover ---------- */
+.cover{position:relative;border-bottom:1px solid var(--rule);overflow:hidden}
+.cover-grid{position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(var(--rule2) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--rule2) 1px,transparent 1px);
+  background-size:28px 28px;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 78%);
+  mask-image:linear-gradient(180deg,#000 0%,transparent 78%)}
+@media(prefers-contrast:more){.cover-grid{display:none}}
+.cover-in{position:relative;padding:clamp(20px,4vw,40px) clamp(12px,3vw,26px) 0;max-width:1360px}
+.tax{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink3);display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.tax span::before{content:"[ ";color:var(--red)}
+.tax span::after{content:" ]";color:var(--red)}
+.cover h1{font-size:clamp(27px,4.6vw,50px);letter-spacing:0;max-width:22ch;text-wrap:balance}
+.cover .lede{font-size:clamp(15.5px,1.7vw,18.5px);line-height:1.5;max-width:66ch;
+  margin-top:14px;color:var(--ink2)}
+.rail{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));
+  border-top:1px solid var(--rule);margin-top:clamp(20px,3vw,32px)}
+.rail div{padding:12px 14px 14px 0;border-right:1px solid var(--rule2)}
+.rail div:last-child{border-right:0}
+.rail dt{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink3)}
+.rail dd{margin:6px 0 0;font-family:var(--sans);font-weight:700;font-size:clamp(16px,2vw,20px);
+  font-variant-numeric:tabular-nums;line-height:1.15}
+
+.overview-label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--red-ink);margin:18px 0 7px}
+.quick-routes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--rule);
+  margin-top:0}
+.quick-routes a{display:flex;align-items:center;min-height:48px;padding:8px 12px 8px 0;
+  border-right:1px solid var(--rule2);border-bottom:1px solid var(--rule2);color:var(--ink2);
+  font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;line-height:1.25}
+.quick-routes a:nth-child(4n){border-right:0}
+.quick-routes a:hover,.quick-routes a:focus-visible{color:var(--red-ink);text-decoration:underline}
+@media(max-width:760px){.rail{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rail div{min-width:0;border-bottom:1px solid var(--rule2)}
+  .rail div:nth-child(2n){border-right:0}
+  .rail dt,.rail dd{overflow-wrap:anywhere}
+  .quick-routes{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(155px,48vw);
+    overflow-x:auto;scrollbar-width:thin;scroll-snap-type:x proximity}
+  .quick-routes a{scroll-snap-align:start}
+  .quick-routes::-webkit-scrollbar{height:10px}
+  .quick-routes::-webkit-scrollbar-thumb{background:var(--rule)}}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:230px minmax(0,1fr);max-width:1500px;margin:0 auto}
+.toc{position:sticky;top:47px;align-self:start;max-height:calc(100vh - 47px);overflow-y:auto;
+  padding:20px 14px 60px;border-right:1px solid var(--rule)}
+.toc-h{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--red-ink);padding:11px 0 5px;border-top:1px solid var(--rule);margin-top:12px}
+.toc-h:first-child{margin-top:0;border-top:0}
+.toc a{display:grid;grid-template-columns:22px 1fr;gap:7px;align-items:baseline;
+  font-family:var(--sans);font-size:13.5px;line-height:1.25;color:var(--ink2);
+  text-decoration:none;padding:6px 0;border-top:1px solid var(--rule2);min-height:44px}
+.toc a .n{font-family:var(--mono);font-size:9.5px;color:var(--ink3)}
+.toc a .cat{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--ink3);margin-top:2px}
+.toc a:hover{color:var(--ink)}
+.toc a.on,.toc a.on .n,.toc a.on .cat{color:var(--red-ink)}
+.toc a.on{box-shadow:inset 2px 0 0 var(--red);padding-left:6px}
+main{min-width:0}
+.wrap{padding:0 clamp(12px,3vw,26px);max-width:960px}
+.wide{padding:0 clamp(12px,3vw,26px);max-width:1360px}
+.report-footer{grid-column:2}
+
+/* ---------- part dividers ---------- */
+.part{max-width:1360px;padding:clamp(34px,5vw,54px) clamp(12px,3vw,26px) 0}
+.part-n{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--red-ink)}
+.part h2{font-size:clamp(19px,2.6vw,27px);margin-top:5px;text-transform:uppercase;letter-spacing:.01em}
+.part hr{border:0;border-top:2px solid var(--ink);margin:12px 0 0}
+
+/* ---------- sections ---------- */
+section{padding-top:clamp(30px,4vw,44px);scroll-margin-top:58px}
+.sec{display:grid;gap:0}
+@media(min-width:1100px){.sec{grid-template-columns:var(--idx) minmax(0,1fr);gap:22px}}
+.sec-idx{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink3);border-top:1px solid var(--ink);padding-top:9px;line-height:1.6}
+.sec-idx b{display:block;color:var(--red-ink);font-weight:600}
+.sec-body{border-top:1px solid var(--ink);padding-top:9px;min-width:0}
+@media(max-width:1099px){.sec-idx{border-top:1px solid var(--ink);padding-bottom:4px}
+  .sec-body{border-top:0;padding-top:2px}}
+.sec-body h3{font-size:clamp(21px,2.9vw,30px);max-width:24ch;margin-bottom:10px}
+.sec-body .sub{font-size:15.5px;color:var(--ink2);font-style:italic;max-width:62ch;margin-bottom:4px}
+h4{font-family:var(--sans);font-size:17px;margin:26px 0 8px}
+h5{font-family:var(--sans);font-size:14.5px;margin:20px 0 6px;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--ink2)}
+
+/* ---------- callouts ---------- */
+.note{border-left:3px solid var(--teal);background:var(--teal-bg);padding:13px 15px;margin:18px 0;
+  font-size:15.5px;max-width:72ch}
+.note>.l{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--teal);display:block;margin-bottom:6px}
+.note p:last-child,.note ul:last-child,.note ol:last-child{margin-bottom:0}
+.note .src{display:block;font-family:var(--mono);font-size:11px;color:var(--ink3);margin-top:8px;word-break:break-word}
+.note.warn{border-left-color:var(--red);background:var(--red-bg)}
+.note.warn>.l{color:var(--red-ink)}
+.note.disp{border-left-color:var(--amber);background:var(--amber-bg)}
+.note.disp>.l{color:var(--amber)}
+.note.ask{border-left-color:var(--blue);background:var(--blue-bg)}
+.note.ask>.l{color:var(--blue)}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto;border:1px solid var(--rule);margin:18px 0;-webkit-overflow-scrolling:touch;
+  scrollbar-width:thin}
+.tw::-webkit-scrollbar{height:10px}
+.tw::-webkit-scrollbar-thumb{background:var(--rule)}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:14px;background:var(--surface)}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--rule2);vertical-align:top}
+th{font-family:var(--sans);font-size:11px;letter-spacing:.05em;text-transform:uppercase;
+  background:var(--surface2);color:var(--ink2);white-space:nowrap}
+td.m,th.m{font-family:var(--mono);font-size:12.4px;font-variant-numeric:tabular-nums}
+.nw{white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.bad{color:var(--red-ink);font-weight:600}
+.good{color:var(--teal);font-weight:600}
+.hint{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink3);margin:-12px 0 16px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(min-width:1100px){.hint{display:none}}
+
+/* ---------- doc control ---------- */
+.dc{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);margin:16px 0}
+@media(min-width:640px){.dc{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1000px){.dc{grid-template-columns:repeat(3,1fr)}}
+.dc div{background:var(--surface);padding:10px 12px}
+.dc dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink3)}
+.dc dd{margin:4px 0 0;font-size:14.5px;line-height:1.45}
+.verdict{border:2px solid var(--red);background:var(--red-bg);padding:12px 14px;margin:16px 0}
+.verdict .l{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--red-ink);display:block;margin-bottom:5px}
+.verdict p{margin:0;font-size:15.5px}
+
+/* ---------- graphite instrument ---------- */
+.inst{background:var(--graphite);color:var(--gink);border:1px solid var(--graphite3);margin:22px 0}
+.inst-h{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between;
+  padding:13px 16px 11px;border-bottom:1px solid var(--graphite3)}
+.inst-h h3{font-size:16px;color:#fff;margin:0}
+.inst-h .cap{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--gink3)}
+.inst-b{padding:16px}
+.inst-c{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 14px}
+.inst .btn{background:var(--graphite2);color:var(--gink2);border-color:var(--graphite3)}
+.inst .btn:hover{border-color:var(--red);color:#fff}
+.inst .btn.on,.inst .btn[aria-pressed="true"]{border-color:var(--red);color:#fff;background:#2A1315}
+.inst code{background:var(--graphite2);color:#FFD9A0;border:1px solid var(--graphite3)}
+.inst b{color:#fff}
+.inst a{color:#9FC4F0}
+
+/* pathway (linear model) */
+.path{display:grid;gap:6px}
+@media(min-width:980px){.path{grid-auto-flow:column;grid-auto-columns:1fr;gap:0}}
+@media(max-width:979px){.path{grid-auto-flow:column;grid-auto-columns:66vw;overflow-x:auto;
+  scroll-snap-type:x mandatory;padding-bottom:10px;scrollbar-width:thin}
+  .path::-webkit-scrollbar{height:10px}
+  .path::-webkit-scrollbar-thumb{background:var(--graphite3)}
+  .path>button{scroll-snap-align:start}}
+.stg{background:var(--graphite2);border:1px solid var(--graphite3);color:inherit;text-align:left;
+  padding:10px 11px 0;cursor:pointer;min-height:44px;border-radius:0;font:inherit}
+@media(min-width:980px){.stg{border-right:0}.stg:last-child{border-right:1px solid var(--graphite3)}}
+.stg .s{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--gink3);margin-bottom:5px}
+.stg .t{display:block;font-family:var(--sans);font-weight:700;font-size:13px;line-height:1.24;color:var(--gink)}
+@media(min-width:980px){.stg .t{min-height:3.7em}}
+.stg .b{display:block;height:3px;background:var(--graphite3);margin:9px -11px 0}
+.stg.done{background:#221315;border-color:#5A2A28}
+.stg.done .t{color:#FFB0A8}
+.stg.done .b{background:var(--red)}
+.stg.cur{box-shadow:inset 0 0 0 2px var(--red)}
+.stg.cur .s{color:var(--red)}
+.read{margin-top:16px;border-top:1px solid var(--graphite3);padding-top:14px;min-height:170px}
+.read .e{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--red);margin-bottom:8px}
+.read h4{font-family:var(--sans);font-size:19px;color:#fff;margin:0 0 8px}
+.read p{font-size:14.6px;line-height:1.6;color:var(--gink2);max-width:74ch}
+.rg{display:grid;gap:10px;margin-top:12px}
+@media(min-width:740px){.rg{grid-template-columns:1fr 1fr}}
+.rc{border:1px solid var(--graphite3);background:#101416;padding:10px 12px}
+.rc .h{font-family:var(--mono);font-size:9px;letter-spacing:.11em;text-transform:uppercase;margin-bottom:5px}
+.rc.loss .h{color:#FF8078}.rc.stop .h{color:#4ECFB8}
+.rc p{margin:0;font-size:13.6px;color:var(--gink2)}
+.tick{font-family:var(--mono);font-size:11px;color:var(--gink3);margin-top:12px}
+figcaption{font-family:var(--mono);font-size:10.5px;color:var(--ink3);line-height:1.55;
+  margin-top:8px;max-width:80ch;padding:0 clamp(12px,3vw,26px)}
+</style>
+<style>
+/* ---------- sourced incident graph ---------- */
+.gwrap{border:1px solid var(--rule);background:var(--surface);margin:22px 0}
+.ghead{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;
+  padding:11px 13px;border-bottom:1px solid var(--rule)}
+.ghead h3{font-size:15.5px}
+.gtools{display:flex;flex-wrap:wrap;gap:6px;padding:9px 13px;border-bottom:1px solid var(--rule);
+  background:var(--surface2)}
+.gsearch{font-family:var(--mono);font-size:12px;padding:9px 10px;border:1px solid var(--rule);
+  background:var(--surface);color:var(--ink);min-height:44px;min-width:130px;flex:1 1 130px;border-radius:0}
+.gfilters{display:flex;flex-wrap:wrap;gap:5px;padding:9px 13px;border-bottom:1px solid var(--rule)}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;
+  border:1px solid var(--rule);background:var(--surface);color:var(--ink2);padding:8px 9px;
+  cursor:pointer;min-height:44px;display:inline-flex;align-items:center;gap:5px;border-radius:0}
+.chip i{width:9px;height:9px;display:inline-block;border:1px solid var(--ink);font-style:normal}
+.chip[aria-pressed="false"]{opacity:.4;text-decoration:line-through}
+.gcanvas{position:relative;height:clamp(360px,58vh,560px);overflow:hidden;background:var(--surface);
+  background-image:linear-gradient(var(--rule2) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--rule2) 1px,transparent 1px);
+  background-size:26px 26px;touch-action:none;cursor:grab}
+.gcanvas.pan{cursor:grabbing}
+.gcanvas:fullscreen{height:100vh;width:100vw}
+.gsvg{position:absolute;inset:0;width:100%;height:100%}
+.gnode{cursor:pointer}
+.gnode rect{stroke:var(--ink);stroke-width:1.2}
+.gnode.sel rect{stroke:var(--red);stroke-width:2.5}
+.gnode.dim{opacity:.22}
+.gedge{fill:none;stroke:#6A7276;stroke-width:1.4}
+.gedge.hot{stroke:var(--red);stroke-width:2.4}
+.gedge.dim{opacity:.14}
+.gelabel{font-family:var(--mono);font-size:9px;fill:var(--ink3)}
+.gelabel.hot{fill:var(--red-ink)}
+.gtitle{font-family:var(--sans);font-weight:700;font-size:11.5px;fill:#0B0C0D}
+.gtype{font-family:var(--mono);font-size:8px;letter-spacing:.06em;fill:#3C4245}
+.gmeta{font-family:var(--mono);font-size:8px;fill:#3C4245}
+.gseq{font-family:var(--mono);font-size:9px;font-weight:600;fill:#0B0C0D}
+.ginspect{border-top:1px solid var(--rule);padding:13px;background:var(--surface2);min-height:120px}
+.ginspect .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink3)}
+.ginspect h4{margin:3px 0 7px;font-size:17px}
+.ginspect dl{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;margin:0;font-size:13.5px}
+.ginspect dt{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.ginspect dd{margin:0}
+.gtable{margin-top:14px}
+.legend{font-family:var(--mono);font-size:10.5px;color:var(--ink3);padding:9px 13px;border-top:1px solid var(--rule)}
+
+/* ---------- chronology ---------- */
+.chrono{border:1px solid var(--rule);background:var(--surface);margin:22px 0}
+.chrono-s{overflow-x:auto;scrollbar-width:thin;padding:14px 13px 6px}
+.chrono-s::-webkit-scrollbar{height:10px}
+.chrono-s::-webkit-scrollbar-thumb{background:var(--rule)}
+.chrono-t{min-width:760px}
+
+/* ---------- mobile dock ---------- */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:70;display:none;
+  background:var(--surface);border-top:1px solid var(--ink);
+  padding-bottom:env(safe-area-inset-bottom,0px)}
+.dock a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  min-height:52px;text-decoration:none;color:var(--ink2);
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;
+  border-right:1px solid var(--rule2)}
+.dock a:last-child{border-right:0}
+.dock a.on{color:var(--red-ink);box-shadow:inset 0 2px 0 var(--red)}
+.dock a span{font-size:15px;line-height:1}
+
+/* ---------- drawer ---------- */
+.scrim{position:fixed;inset:0;background:rgba(11,12,13,.55);z-index:78;opacity:0;
+  pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+
+@media(max-width:1099px){
+  .shell{grid-template-columns:1fr}
+  .toc{position:fixed;inset:0 auto 0 0;width:290px;max-width:88vw;z-index:80;
+    background:var(--paper);transform:translateX(-102%);transition:transform .22s;
+    max-height:100dvh;border-right:1px solid var(--ink)}
+  .toc.open{transform:translateX(0)}
+  .dock{display:flex}
+  body{--dock:56px}
+  .report-footer{grid-column:1}
+  section{scroll-margin-top:54px}
+}
+@media(min-width:1100px){#menu{display:none}}
+@media(max-width:400px){
+  body{font-size:16px}
+  .cover h1{font-size:clamp(24px,7.6vw,32px);word-break:break-word;hyphens:auto}
+  .tax{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;padding-bottom:8px;margin-bottom:10px}
+  .tax span{flex:none}
+  .tax::-webkit-scrollbar{height:10px}
+  .tax::-webkit-scrollbar-thumb{background:var(--rule)}
+  .overview-label{margin-top:10px;margin-bottom:4px}
+  .cover .lede{line-height:1.45;margin-top:8px;margin-bottom:8px}
+  .rail{margin-top:12px;margin-bottom:8px}
+  .inst-b,.inst-c,.inst-h{padding-left:11px;padding-right:11px}
+  .rail div{padding-right:10px}
+}
+@media(prefers-contrast:more){
+  :root{--rule:#6A7276;--rule2:#8C9498}
+  .btn,.chip,.gsearch{border-width:2px}
+}
+@media(forced-colors:active){
+  .prog i,.stg .b,.chip i{forced-color-adjust:none;background:Highlight}
+  .cover-grid,.gcanvas{background-image:none}
+  a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline-color:Highlight}
+}
+
+/* ---------- print ---------- */
+@media print{
+  :root{--paper:#fff;--surface:#fff;--surface2:#fff;--ink:#000;--ink2:#000;--ink3:#333;
+    --rule:#999;--rule2:#bbb;--graphite:#fff;--graphite2:#fff;--graphite3:#999;
+    --gink:#000;--gink2:#000;--gink3:#333}
+  body{background:#fff;color:#000;font-size:10.5pt;padding-bottom:0}
+  .util,.dock,.scrim,.toc,.inst-c,.gtools,.gfilters,.ghead .btn,.hint,.prog{display:none!important}
+  .shell{grid-template-columns:1fr}
+  .cover-grid{display:none}
+  .ai-notice{border:2px solid #000;background:#fff}
+  .inst,.gwrap,.chrono,.note,.tw{break-inside:avoid;border-color:#999}
+  .gcanvas{height:auto;min-height:340px;background-image:none}
+  .tw,.chrono-s{overflow:visible!important}
+  table{min-width:0}
+  thead{display:table-header-group}
+  tr,img,svg{break-inside:avoid}
+  h2,h3,h4{break-after:avoid}
+  p,li{orphans:3;widows:3}
+  .path{grid-auto-flow:row!important;grid-auto-columns:auto!important;overflow:visible!important}
+  a[href^="http"]::after{content:" (" attr(href) ")";font-size:8pt;color:#333;word-break:break-all}
+  @page{margin:14mm}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#overview">Skip to incident overview</a>
+<a class="skip" href="#part-0">Skip to full report</a>
+
+<header class="util">
+  <div class="util-in">
+    <button class="btn" id="menu" type="button" aria-expanded="false" aria-controls="toc">&#9776; Contents</button>
+    <div class="util-id"><b>{{SHORT_TITLE}}</b> &middot; {{IDENTIFIERS}} &middot; {{PROFILE}}</div>
+    <button class="btn" id="theme" type="button" aria-label="Toggle colour theme">&#9686; Theme</button>
+  </div>
+  <div class="prog" aria-hidden="true"><i id="progbar"></i></div>
+</header>
+
+<div class="ai-notice" role="note">
+  <p><b>AI-generated analytical report</b>
+  Verify facts, citations, dates, and conclusions before relying on this document. This is not an
+  official report, statement, or notification from the affected company, project, vendors,
+  regulators, or other involved parties.</p>
+</div>
+
+<div class="cover" id="overview" tabindex="-1">
+  <div class="cover-grid" aria-hidden="true"></div>
+  <div class="cover-in">
+    <div class="tax">
+      <span>{{INCIDENT_CLASS}}</span><span>{{DATE_RANGE}} UTC</span>
+      <span>{{INCIDENT_STATUS}}</span><span>{{SEVERITY}}</span>
+    </div>
+    <h1>{{Headline naming the mechanism, not the severity}}</h1>
+    <p class="overview-label">Incident in brief</p>
+    <p class="lede">{{A factual 60-90 word short version covering incident identity and
+      scope, current status, material impact, root cause, response and recovery state,
+      overall confidence, and the most important unknown. No storytelling or chronology.}}</p>
+    <dl class="rail" aria-label="Key incident facts">
+      <div><dt>{{Metric}}</dt><dd class="num">{{Value}}</dd></div>
+      <div><dt>{{Metric}}</dt><dd class="num">{{Value}}</dd></div>
+      <div><dt>{{Metric}}</dt><dd class="num">{{Value}}</dd></div>
+      <div><dt>{{Metric}}</dt><dd class="num">{{Value}}</dd></div>
+    </dl>
+        <nav class="quick-routes" id="overview-shortcuts" tabindex="0"
+          aria-label="Quick routes into the full incident analysis; scroll horizontally for more">
+      <a href="#control">Situation &amp; scope</a>
+      <a href="#interactive-timeline">Chronology</a>
+      <a href="#part-2">Root cause &amp; attack path</a>
+      <a href="#part-3">Impact &amp; blast radius</a>
+      <a href="#part-4">Accountability</a>
+      <a href="#part-5">Controls &amp; recovery</a>
+      <a href="#part-6">Governance &amp; ownership</a>
+      <a href="#part-7">Evidence &amp; lessons</a>
+    </nav>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+
+<div class="shell">
+<nav class="toc" id="toc" aria-label="Contents">
+  <div class="toc-h">Instruments</div>
+  <a href="#overview"><span class="n">O</span><span>Incident overview</span></a>
+  <a href="#interactive-attack"><span class="n">A</span><span>Attack Anatomy</span></a>
+  <a href="#interactive-graph"><span class="n">B</span><span>Sourced Relationship Graph</span></a>
+  <a href="#interactive-timeline"><span class="n">C</span><span>Campaign Chronology</span></a>
+
+  <div class="toc-h">Part 0 &mdash; Incident parameters</div>
+  <a href="#control"><span class="n">00</span><span>Document control<span class="cat">Snapshot</span></span></a>
+
+  <div class="toc-h">Part I &mdash; For Decision Makers</div>
+  <a href="#s01"><span class="n">01</span><span>{{Executive brief}}<span class="cat">Decision makers</span></span></a>
+  <a href="#s02"><span class="n">02</span><span>{{Immediate triage}}<span class="cat">Action</span></span></a>
+  <a href="#s03"><span class="n">03</span><span>{{Board questions}}<span class="cat">Oversight</span></span></a>
+
+  <div class="toc-h">Part II &mdash; Understanding the Attack</div>
+  <a href="#s04"><span class="n">04</span><span>{{Primer title}}<span class="cat">Primer</span></span></a>
+  <a href="#s05"><span class="n">05</span><span>{{Technology title}}<span class="cat">Technology</span></span></a>
+  <a href="#s06"><span class="n">06</span><span>{{Incident title}}<span class="cat">Incident</span></span></a>
+  <a href="#s07"><span class="n">07</span><span>{{Technical-core title}}<span class="cat">Technical core</span></span></a>
+
+  <div class="toc-h">Part III &mdash; Consequence</div>
+  <a href="#s08"><span class="n">08</span><span>{{Consequence title}}<span class="cat">Consequence</span></span></a>
+  <a href="#s09"><span class="n">09</span><span>{{Critical-mechanism title}}<span class="cat">Critical mechanism</span></span></a>
+  <a href="#s10"><span class="n">10</span><span>{{Impact-realization title}}<span class="cat">Impact realization</span></span></a>
+  <a href="#s11"><span class="n">11</span><span>{{Blast-radius title}}<span class="cat">Blast radius</span></span></a>
+
+  <div class="toc-h">Part IV &mdash; Accountability</div>
+  <a href="#s12"><span class="n">12</span><span>{{Accountability title}}<span class="cat">Accountability</span></span></a>
+  <a href="#s13"><span class="n">13</span><span>{{Fair-assessment title}}<span class="cat">Fair assessment</span></span></a>
+  <a href="#s14"><span class="n">14</span><span>{{Precedent title}}<span class="cat">Precedent</span></span></a>
+
+  <div class="toc-h">Part V &mdash; Defence</div>
+  <a href="#s15"><span class="n">15</span><span>{{Controls title}}<span class="cat">Controls</span></span></a>
+  <a href="#s16"><span class="n">16</span><span>{{Detection title}}<span class="cat">Detection and hunting</span></span></a>
+  <a href="#s17"><span class="n">17</span><span>{{Architecture title}}<span class="cat">Architecture</span></span></a>
+  <a href="#s18"><span class="n">18</span><span>{{Supplier-assurance title}}<span class="cat">Supplier assurance</span></span></a>
+  <a href="#s19"><span class="n">19</span><span>{{Programme title}}<span class="cat">Programme</span></span></a>
+
+  <div class="toc-h">Part VI &mdash; Governance</div>
+  <a href="#s20"><span class="n">20</span><span>{{Governance title}}<span class="cat">Governance and privacy</span></span></a>
+
+  <div class="toc-h">Part VII &mdash; Reference</div>
+  <a href="#s21"><span class="n">21</span><span>{{ATT&amp;CK title}}<span class="cat">ATT&amp;CK</span></span></a>
+  <a href="#s22"><span class="n">22</span><span>{{Chronology title}}<span class="cat">Chronology</span></span></a>
+  <a href="#s23"><span class="n">23</span><span>{{Lessons title}}<span class="cat">Lessons</span></span></a>
+  <a href="#s24"><span class="n">24</span><span>{{Evidence title}}<span class="cat">Evidence</span></span></a>
+  <a href="#s25"><span class="n">25</span><span>{{Sources title}}<span class="cat">Sources and intelligence</span></span></a>
+</nav>
+
+<main id="main">
+
+<!-- The three interactive surfaces retain their original position between the cover and Part 0. -->
+
+<!-- ===================== INSTRUMENT A: ATTACK ANATOMY =====================
+     Choose the model from evidence topology (references/visual-system.md).
+     Linear pathway shown here. Delete if the incident shape does not support it. -->
+<div class="wide">
+  <section id="interactive-attack">
+    <div class="inst">
+      <div class="inst-h">
+        <h3>{{Attack anatomy &mdash; what the reader learns by stepping through}}</h3>
+        <span class="cap">Interactive &middot; <span id="stgcount">0</span> stages</span>
+      </div>
+      <div class="inst-b">
+        <div class="path" id="path" role="tablist" aria-label="Attack stages"></div>
+        <p class="hint" style="color:var(--gink3)">&#8596; swipe stages horizontally</p>
+        <div class="read" id="readout" role="tabpanel" aria-live="polite"></div>
+      </div>
+      <div class="inst-c">
+        <button class="btn" id="pplay">&#9654; Run</button>
+        <button class="btn" id="pprev">&#9664; Back</button>
+        <button class="btn" id="pnext">Forward &#9654;</button>
+        <button class="btn" id="preset">Reset</button>
+      </div>
+    </div>
+    <figcaption>{{Source note: which disclosure documents which stage.}}</figcaption>
+  </section>
+</div>
+
+<!-- ===================== INSTRUMENT B: SOURCED GRAPH ===================== -->
+<div class="wide">
+  <section id="interactive-graph">
+    <div class="gwrap">
+      <div class="ghead">
+        <h3>Sourced relationship graph</h3>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn" id="gfit">Fit</button>
+          <button class="btn" id="gfull">Full screen</button>
+          <button class="btn" id="gpng">PNG</button>
+          <button class="btn" id="greset">Reset</button>
+        </div>
+      </div>
+      <div class="gtools">
+        <input class="gsearch" id="gq" type="search" placeholder="Search nodes&hellip;"
+               aria-label="Search graph nodes">
+        <button class="btn" id="gconf" aria-pressed="false">Hide disputed</button>
+      </div>
+      <div class="gfilters" id="gfilters" role="group" aria-label="Filter by node type"></div>
+       <p class="sr-only" id="graph-help">Use arrow keys to move between visible nodes,
+         Enter or Space to select a focused node, and Escape to clear the selection.</p>
+       <div class="gcanvas" id="gcanvas" tabindex="0" role="region"
+         aria-label="Interactive incident relationship graph" aria-describedby="graph-help">
+        <svg class="gsvg" id="gsvg" aria-hidden="true"></svg>
+      </div>
+      <div class="legend" id="glegend"></div>
+      <div class="ginspect" id="ginspect" aria-live="polite"></div>
+      <div class="gtable" id="gtable"></div>
+    </div>
+    <figcaption>Every node and edge carries source IDs, confidence, and observed / reported /
+      assessed / disputed status. Unsupported relationships are not drawn. The edge register
+      below is the accessible equivalent and is retained in print.
+      <!-- Keep this sentence only when Archify did not render the graph directly; delete it
+           when the graph above is Archify's own rendered output. -->
+      Archify source included; fallback renderer used because Archify was unavailable in this
+      environment.</figcaption>
+    <!-- Canonical evidence model for the graph — the Archify typed JSON IR. Populate with the
+         same nodes/edges (or their Archify-shaped equivalent) authored above. Present whether
+         Archify rendered directly or the fallback above is doing the rendering. -->
+    <script type="application/json" id="archify-relationship-ir">
+    { "diagramType": "REPLACE: architecture | workflow | sequence | dataflow | lifecycle",
+      "nodes": [], "relationships": [] }
+    </script>
+  </section>
+</div>
+
+<!-- ===================== INSTRUMENT C: CHRONOLOGY ===================== -->
+<div class="wide">
+  <section id="interactive-timeline">
+    <div class="chrono">
+      <div class="ghead"><h3>Campaign chronology</h3>
+        <span class="cap" style="color:var(--ink3)">All times UTC</span></div>
+      <div class="chrono-s">
+        <div class="chrono-t">
+          <div class="tw" style="margin:0;border:0" role="region" tabindex="0"
+               aria-label="Campaign chronology table; scroll horizontally for more columns">
+          <table>
+            <caption>Campaign chronology and evidence basis</caption>
+            <thead><tr><th class="nw" scope="col">UTC</th><th scope="col">Event</th><th scope="col">Track</th><th scope="col">Confidence / source</th></tr></thead>
+            <tbody>
+              <tr><td class="m nw">{{...}}</td><td>{{...}}</td><td>{{adversary | detection | response | comms | recovery}}</td><td>{{...}}</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption>{{State how the chronology was reconstructed: source clocks, timezone conversion,
+      clock-skew handling, per-event confidence, conflicting timestamps and telemetry gaps.}}</figcaption>
+  </section>
+</div>
+
+<!-- Part 0 opens the numbered report — it comes after the three interactive surfaces above,
+     never before them (references/visual-system.md, "Fixed page order"). -->
+<div class="part" id="part-0"><div class="part-n">Part 0</div><h2>Incident parameters</h2><hr></div>
+
+<section id="control" class="wrap">
+  <div class="sec">
+    <div class="sec-idx"><b>00</b>Snapshot</div>
+    <div class="sec-body">
+      <h3>Document control and incident snapshot</h3>
+
+      <div class="verdict">
+        <span class="l">Data-impact verdict</span>
+        <p>{{confirmed acquisition/exfiltration | confirmed access only | capability without
+        observed access | no evidence located | unknown}} &mdash; {{evidence and caveat.
+        "No evidence located" is NEVER written as "no data taken".}}</p>
+      </div>
+
+      <h5>Document identity</h5>
+      <dl class="dc">
+        <div><dt>Report profile</dt><dd>{{Public-source incident analysis}}</dd></div>
+        <div><dt>Status / version</dt><dd>{{final}} &middot; {{v1.0}}</dd></div>
+        <div><dt>As of (UTC)</dt><dd class="num">{{YYYY-MM-DD HH:MM}}</dd></div>
+        <div><dt>Author / owner</dt><dd>{{...}}</dd></div>
+        <div><dt>Classification / TLP</dt><dd>{{TLP:CLEAR}}</dd></div>
+        <div><dt>Audience</dt><dd>{{mixed}}</dd></div>
+      </dl>
+
+      <h5>Scope and method</h5>
+      <dl class="dc">
+        <div><dt>Purpose / decision supported</dt><dd>{{...}}</dd></div>
+        <div><dt>In scope</dt><dd>{{entities and time range}}</dd></div>
+        <div><dt>Out of scope</dt><dd>{{...}}</dd></div>
+        <div><dt>Methodology</dt><dd>{{public-source research; no privileged access}}</dd></div>
+        <div><dt>Limitations</dt><dd>{{...}}</dd></div>
+        <div><dt>Conflicts of interest</dt><dd>{{state plainly, or "none identified"}}</dd></div>
+      </dl>
+
+      <h5>Incident timestamps &mdash; do not collapse these</h5>
+      <div class="tw" role="region" tabindex="0"
+           aria-label="Incident milestones table; scroll horizontally for more columns">
+      <table>
+        <caption>Incident milestones in UTC</caption>
+        <thead><tr><th scope="col">Milestone</th><th class="nw" scope="col">UTC</th><th scope="col">Basis / confidence</th></tr></thead>
+        <tbody>
+          <tr><td>First known activity</td><td class="m nw">{{...}}</td><td>{{...}}</td></tr>
+          <tr><td>First observed in telemetry</td><td class="m nw">{{...}}</td><td>{{...}}</td></tr>
+          <tr><td>Detected</td><td class="m nw">{{...}}</td><td>{{...}}</td></tr>
+          <tr><td>Reported</td><td class="m nw">{{...}}</td><td>{{...}}</td></tr>
+          <tr><td>Declared</td><td class="m nw">{{...}}</td><td>{{...}}</td></tr>
+          <tr><td>Contained</td><td class="m nw">{{...}}</td><td>{{...}}</td></tr>
+          <tr><td>Eradicated</td><td class="m nw">{{...}}</td><td>{{...}}</td></tr>
+          <tr><td>Service restored</td><td class="m nw">{{...}}</td><td>{{...}}</td></tr>
+          <tr><td>Closed</td><td class="m nw">{{...}}</td><td>{{...}}</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="hint">&#8596; scroll table horizontally</p>
+
+      <h5>Affected scope</h5>
+      <dl class="dc">
+        <div><dt>Assets / services</dt><dd>{{...}}</dd></div>
+        <div><dt>Identities</dt><dd>{{...}}</dd></div>
+        <div><dt>Suppliers</dt><dd>{{...}}</dd></div>
+        <div><dt>Data categories / subjects</dt><dd>{{... or "unknown externally"}}</dd></div>
+        <div><dt>CIA / safety effects</dt><dd>{{...}}</dd></div>
+        <div><dt>Jurisdictions</dt><dd>{{...}}</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<div class="part" id="part-1"><div class="part-n">Part I</div><h2>For Decision Makers</h2><hr></div>
+
+<section id="s01" class="wrap">
+  <div class="sec">
+    <div class="sec-idx"><b>01</b>Decision makers</div>
+    <div class="sec-body">
+      <h3>{{Executive brief}}</h3>
+      <p class="sub">{{Optional standfirst.}}</p>
+      <p>{{Plain language. No unexplained jargon. Consequence first, mechanism second.}}</p>
+
+      <h4>Mechanism analogies</h4>
+      <div class="note">
+        <span class="l">Analogy 1 &middot; {{domain}}</span>
+        <p><b>{{One-line comparison.}}</b> {{Explain the mechanism, not the severity; state where the analogy stops.}}</p>
+      </div>
+
+      <h4>Cost drivers</h4>
+      <div class="tw" role="region" tabindex="0"
+           aria-label="Cost drivers table; scroll horizontally for more columns">
+      <table>
+        <caption>Material cost and risk drivers</caption>
+        <thead><tr><th scope="col">Driver</th><th scope="col">Why it is expensive</th></tr></thead>
+        <tbody><tr><td><b>{{...}}</b></td><td class="bad">{{...}}</td></tr></tbody>
+      </table>
+      </div>
+
+      <div class="note warn">
+        <span class="l">The single sentence to take away</span>
+        <p>{{The structural finding, not the incident summary.}}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s02" class="wrap">
+  <div class="sec">
+    <div class="sec-idx"><b>02</b>Action</div>
+    <div class="sec-body">
+      <h3>{{Immediate triage}}</h3>
+      <div class="note warn">
+        <span class="l">Scope correction most teams get wrong</span>
+        <p>{{The window people scope to vs. the window that matters.}}</p>
+      </div>
+      <h4>Step 1 &mdash; Determine whether you were in scope</h4>
+      <p>{{...}}</p>
+      <h4>Step 2 &mdash; Hunt</h4>
+      <pre style="font-family:var(--mono);font-size:12.5px;background:var(--surface2);padding:11px;
+        overflow-x:auto;margin:0 0 15px"><code># {{what this finds}}
+{{command — inert text for authorised human review; never auto-run}}</code></pre>
+      <h4>Step 3 &mdash; Preserve evidence before it ages out</h4>
+      <p>{{Clock/timezone verification, volatile-data priority, acquisition order, hashes, custody,
+        immutable storage, retention/legal hold — and the actions responders must AVOID because
+        they destroy evidence.}}</p>
+    </div>
+  </div>
+</section>
+
+<section id="s03" class="wrap">
+  <div class="sec">
+    <div class="sec-idx"><b>03</b>Oversight</div>
+    <div class="sec-body">
+      <h3>{{Board questions}}</h3>
+      <div class="tw" role="region" tabindex="0"
+           aria-label="Board questions table; scroll horizontally for more columns">
+      <table>
+        <caption>Board questions, expected answers, and warning signs</caption>
+        <thead><tr><th scope="col" style="width:34%">Question</th><th scope="col">Good answer &mdash; and the warning sign</th></tr></thead>
+        <tbody>
+          <tr><td><b>1. {{Question}}</b></td>
+              <td><span class="good">Good:</span> {{specific, with a date or a list}}<br>
+                  <span class="bad">Warning sign:</span> {{qualitative reassurance}}</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Replace every placeholder below. Keep all Sections 04-25 in canonical order. When the
+  evidence does not support depth, retain the section with one concise sourced statement
+  explaining what is unknown externally or why the function is not applicable. -->
+<div class="part" id="part-2"><div class="part-n">Part II</div><h2>Understanding the Attack</h2><hr></div>
+<section id="s04" class="wrap"><div class="sec"><div class="sec-idx"><b>04</b>Primer</div><div class="sec-body"><h3>{{Incident-specific primer title}}</h3><p>{{Define the concepts the report depends on, or state concisely why no primer is needed.}}</p></div></div></section>
+<section id="s05" class="wrap"><div class="sec"><div class="sec-idx"><b>05</b>Technology</div><div class="sec-body"><h3>{{Affected-technology title}}</h3><p>{{Explain the affected technology, deployment shape, and security relevance.}}</p></div></div></section>
+<section id="s06" class="wrap"><div class="sec"><div class="sec-idx"><b>06</b>Incident</div><div class="sec-body"><h3>{{Incident identity title}}</h3><p>{{Who, what, when, where, why, and how, preserving unknowns.}}</p></div></div></section>
+<section id="s07" class="wrap"><div class="sec"><div class="sec-idx"><b>07</b>Technical core</div><div class="sec-body"><h3>{{Anatomy and causal-analysis title}}</h3><p>{{Stage-by-stage mechanism and causal register linking trigger, technical root cause, contributing conditions and systemic causes to evidence, failed barriers, owned corrective actions and validation.}}</p></div></div></section>
+
+<div class="part" id="part-3"><div class="part-n">Part III</div><h2>Consequence</h2><hr></div>
+<section id="s08" class="wrap"><div class="sec"><div class="sec-idx"><b>08</b>Consequence</div><div class="sec-body"><h3>{{Data-consequence title}}</h3><p>{{Separate capability, access, acquisition, exfiltration, and observed impact.}}</p></div></div></section>
+<section id="s09" class="wrap"><div class="sec"><div class="sec-idx"><b>09</b>Critical mechanism</div><div class="sec-body"><h3>{{Critical-mechanism title}}</h3><p>{{Explain the most commonly misunderstood mechanism.}}</p></div></div></section>
+<section id="s10" class="wrap"><div class="sec"><div class="sec-idx"><b>10</b>Impact realization</div><div class="sec-body"><h3>{{Impact-realization title}}</h3><p>{{Explain how impact or exfiltration occurred and why controls failed; bound unsupported claims.}}</p></div></div></section>
+<section id="s11" class="wrap"><div class="sec"><div class="sec-idx"><b>11</b>Blast radius</div><div class="sec-body"><h3>{{Blast-radius title}}</h3><p>{{Bound affected entities, infrastructure, identities, data, and related activity.}}</p></div></div></section>
+
+<div class="part" id="part-4"><div class="part-n">Part IV</div><h2>Accountability</h2><hr></div>
+<section id="s12" class="wrap"><div class="sec"><div class="sec-idx"><b>12</b>Accountability</div><div class="sec-body"><h3>{{Platform-responsibility title}}</h3><p>{{Assess platform or vendor responsibility fairly.}}</p></div></div></section>
+<section id="s13" class="wrap"><div class="sec"><div class="sec-idx"><b>13</b>Fair assessment</div><div class="sec-body"><h3>{{Victim-responsibility title}}</h3><p>{{Assess victim or customer responsibility, including where criticism would be unfair.}}</p></div></div></section>
+<section id="s14" class="wrap"><div class="sec"><div class="sec-idx"><b>14</b>Precedent</div><div class="sec-body"><h3>{{Precedent title}}</h3><p>{{Compare relevant prior incidents and identify repeat versus genuinely new patterns.}}</p></div></div></section>
+
+<div class="part" id="part-5"><div class="part-n">Part V</div><h2>Defence</h2><hr></div>
+<section id="s15" class="wrap"><div class="sec"><div class="sec-idx"><b>15</b>Controls</div><div class="sec-body"><h3>{{Controls title}}</h3><p>{{Prevent, protect, detect, and respond controls mapped to the mechanism.}}</p></div></div></section>
+<section id="s16" class="wrap"><div class="sec"><div class="sec-idx"><b>16</b>Detection and hunting</div><div class="sec-body"><h3>{{Detection title}}</h3><p>{{Implementable detections, hunts, telemetry, tuning, validation, and gaps.}}</p></div></div></section>
+<section id="s17" class="wrap"><div class="sec"><div class="sec-idx"><b>17</b>Architecture</div><div class="sec-body"><h3>{{Architecture title}}</h3><p>{{Architectural alternatives and honest limits.}}</p></div></div></section>
+<section id="s18" class="wrap"><div class="sec"><div class="sec-idx"><b>18</b>Supplier assurance</div><div class="sec-body"><h3>{{Supplier-assurance title}}</h3><p>{{Checks that would have caught the relevant supplier/component risk versus generic checks that would not.}}</p></div></div></section>
+<section id="s19" class="wrap"><div class="sec"><div class="sec-idx"><b>19</b>Programme</div><div class="sec-body"><h3>{{Implementation-programme title}}</h3><p>{{Sequenced, owned implementation programme with validation and closure.}}</p></div></div></section>
+
+<div class="part" id="part-6"><div class="part-n">Part VI</div><h2>Governance</h2><hr></div>
+<section id="s20" class="wrap"><div class="sec"><div class="sec-idx"><b>20</b>Governance and privacy</div><div class="sec-body"><h3>{{Governance title}}</h3><p>{{Obligations, ownership, decision records, RACI, metrics, and tabletop scenario.}}</p></div></div></section>
+
+<div class="part" id="part-7"><div class="part-n">Part VII</div><h2>Reference</h2><hr></div>
+<section id="s21" class="wrap"><div class="sec"><div class="sec-idx"><b>21</b>ATT&amp;CK</div><div class="sec-body"><h3>{{ATT&amp;CK title}}</h3><p>{{Map only supported adversary behavior and name framework gaps; state not applicable where no adversary behavior is evidenced.}}</p></div></div></section>
+<section id="s22" class="wrap"><div class="sec"><div class="sec-idx"><b>22</b>Chronology</div><div class="sec-body"><h3>{{Full-chronology title}}</h3><p>{{Full sourced chronology with clocks, precision, confidence, conflicts, and gaps.}}</p></div></div></section>
+<section id="s23" class="wrap"><div class="sec"><div class="sec-idx"><b>23</b>Lessons</div><div class="sec-body"><h3>{{Lessons title}}</h3><p>{{Evidence-linked lessons with accountable implications.}}</p></div></div></section>
+<section id="s24" class="wrap"><div class="sec"><div class="sec-idx"><b>24</b>Evidence</div><div class="sec-body"><h3>{{Evidence-register title}}</h3><p>{{Consolidated claim-to-source, provenance, and graph-edge evidence registers.}}</p></div></div></section>
+<section id="s25" class="wrap"><div class="sec"><div class="sec-idx"><b>25</b>Sources and intelligence</div><div class="sec-body"><h3>{{Sources title}}</h3><p>{{Tiered sources, myths and corrections, intelligence gaps, handling, and supported indicators.}}</p></div></div></section>
+
+</main>
+
+<footer class="wrap report-footer">
+  <div class="ai-notice" style="margin:40px 0 0;border-bottom:0">
+    <p><b>AI-generated analytical report</b>
+    Verify facts, citations, dates, and conclusions before relying on this document. This is not an
+    official report, statement, or notification from the affected company, project, vendors,
+    regulators, or other involved parties.</p>
+  </div>
+  <p style="font-family:var(--mono);font-size:11px;color:var(--ink3);line-height:1.7;
+    margin:14px 0 40px;max-width:80ch">
+    {{Prepared date · sources basis · note that conflicts are presented rather than resolved.}}
+    {{Not legal advice; not a substitute for a scoped assessment of your own environment.}}
+  </p>
+</footer>
+</div>
+
+<nav class="dock" aria-label="Sections">
+  <a href="#overview" data-dock="overview"><span aria-hidden="true">&#9632;</span>Overview</a>
+  <a href="#interactive-attack" data-dock="interactive-attack"><span aria-hidden="true">&#9656;</span>Attack</a>
+  <a href="#interactive-graph" data-dock="interactive-graph"><span aria-hidden="true">&#9670;</span>Graph</a>
+  <a href="#s01" data-dock="s01"><span aria-hidden="true">&#9633;</span>Report</a>
+</nav>
+<script>
+(function(){
+"use strict";
+var RM = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+var SVGNS = "http://www.w3.org/2000/svg";
+
+/* Safe DOM helpers — never innerHTML incident-derived strings. */
+function el(tag, attrs, text){
+  var n = document.createElement(tag);
+  if(attrs) for(var k in attrs) n.setAttribute(k, attrs[k]);
+  if(text != null) n.textContent = text;
+  return n;
+}
+function svg(tag, attrs){
+  var n = document.createElementNS(SVGNS, tag);
+  if(attrs) for(var k in attrs) n.setAttribute(k, attrs[k]);
+  return n;
+}
+function clear(n){ while(n && n.firstChild) n.removeChild(n.firstChild); }
+
+/* ============================================================
+   1. ATTACK PATHWAY
+   REPLACE STAGES. Each stage: when/title/phase/what/gained/control.
+   ============================================================ */
+var STAGES = [
+  { when:"{{DATE}}", title:"{{Stage name}}", phase:"{{Stage 01 · Phase · Target}}",
+    what:"{{The mechanism, 3-6 sentences.}}",
+    gained:"{{What the attacker gained here.}}",
+    control:"{{The control that would have broken this stage.}}" }
+];
+
+var path = document.getElementById("path"), readout = document.getElementById("readout");
+if(path && readout){
+  var cur = -1, timer = null;
+  var cnt = document.getElementById("stgcount"); if(cnt) cnt.textContent = String(STAGES.length);
+  STAGES.forEach(function(s, i){
+    var b = el("button", {class:"stg", type:"button", role:"tab", "aria-selected":"false"});
+    b.appendChild(el("span", {class:"s"}, s.when));
+    b.appendChild(el("span", {class:"t"}, s.title));
+    b.appendChild(el("span", {class:"b"}));
+    b.addEventListener("click", function(){ stop(); go(i); });
+    path.appendChild(b);
+  });
+  var stgs = path.querySelectorAll(".stg");
+  function go(i){
+    cur = Math.max(0, Math.min(i, STAGES.length - 1));
+    for(var j = 0; j < stgs.length; j++){
+      stgs[j].classList.toggle("done", j <= cur);
+      stgs[j].classList.toggle("cur", j === cur);
+      stgs[j].setAttribute("aria-selected", j === cur ? "true" : "false");
+    }
+    if(stgs[cur]){
+      var left = stgs[cur].offsetLeft, right = left + stgs[cur].offsetWidth;
+      if(left < path.scrollLeft) path.scrollLeft = left;
+      else if(right > path.scrollLeft + path.clientWidth) path.scrollLeft = right - path.clientWidth;
+    }
+    var s = STAGES[cur];
+    clear(readout);
+    readout.appendChild(el("div", {class:"e"}, s.phase));
+    readout.appendChild(el("h4", null, s.title));
+    readout.appendChild(el("p", null, s.what));
+    var g = el("div", {class:"rg"});
+    var a = el("div", {class:"rc loss"});
+    a.appendChild(el("div", {class:"h"}, "What the attacker gained"));
+    a.appendChild(el("p", null, s.gained));
+    var c = el("div", {class:"rc stop"});
+    c.appendChild(el("div", {class:"h"}, "Control that breaks this stage"));
+    c.appendChild(el("p", null, s.control));
+    g.appendChild(a); g.appendChild(c); readout.appendChild(g);
+    readout.appendChild(el("div", {class:"tick"},
+      "Stage " + (cur + 1) + " of " + STAGES.length + " \u00b7 all times UTC"));
+  }
+  function stop(){ if(timer){ clearInterval(timer); timer = null; }
+    document.getElementById("pplay").textContent = "\u25B6 Run"; }
+  document.getElementById("pplay").addEventListener("click", function(){
+    if(timer){ stop(); return; }
+    if(cur >= STAGES.length - 1) cur = -1;
+    this.textContent = "\u275A\u275A Pause"; go(cur + 1);
+    if(RM){ stop(); return; }
+    timer = setInterval(function(){
+      if(cur >= STAGES.length - 1){ stop(); return; } go(cur + 1); }, 6000);
+  });
+  document.getElementById("pnext").addEventListener("click", function(){ stop(); go(cur + 1); });
+  document.getElementById("pprev").addEventListener("click", function(){ stop(); go(cur - 1); });
+  document.getElementById("preset").addEventListener("click", function(){ stop(); go(0); });
+  go(0);
+}
+
+/* ============================================================
+   2. SOURCED INCIDENT GRAPH — Archify fallback renderer
+   This SVG renderer is the dependency-free FALLBACK for when Archify
+   cannot render: author the graph as Archify typed JSON IR first (pick
+   architecture / workflow / sequence / dataflow / lifecycle from the
+   incident's evidence topology), embed that IR verbatim as inert
+   application/json (see #archify-relationship-ir below), then feed the same node/edge
+   facts into NODES and EDGES here. If Archify *can* render in this
+   environment, embed its own graph output at #interactive-graph instead
+   of this renderer, and drop the fallback-note paragraph in the graph
+   figcaption.
+   REPLACE NODES and EDGES.
+   node: id, type, title, conf, src[], status, seq (optional), col, row
+   edge: from, to, rel, conf, status, src[]
+   status: observed | reported | assessed | disputed  — NEVER draw an unsupported edge.
+   ============================================================ */
+var TYPES = {
+  actor:   {label:"Threat actor",  fill:"#F3D3DA"},
+  victim:  {label:"Victim",        fill:"#D6E7DC"},
+  identity:{label:"Identity",      fill:"#F0E2C0"},
+  host:    {label:"Host/workload", fill:"#DFDCEF"},
+  cloud:   {label:"Cloud/service", fill:"#D3E2EF"},
+  software:{label:"Software",      fill:"#D2E9EC"},
+  vuln:    {label:"Vulnerability", fill:"#F5DCC8"},
+  data:    {label:"Data",          fill:"#DDE6D6"},
+  control: {label:"Control",       fill:"#DEE2E4"},
+  evidence:{label:"Evidence",      fill:"#E8E8E8"}
+};
+
+var NODES = [
+  {id:"n1", type:"actor",  title:"{{Actor or entry condition}}", conf:"Established",
+   src:["T1-1"], status:"observed", seq:1, col:0, row:0},
+  {id:"n2", type:"software", title:"{{Component}}", conf:"Established",
+   src:["T1-1"], status:"observed", seq:2, col:1, row:0},
+  {id:"n3", type:"victim", title:"{{Victim system}}", conf:"High",
+   src:["T1-2"], status:"reported", seq:3, col:2, row:0}
+];
+
+var EDGES = [
+  {from:"n1", to:"n2", rel:"exploited",   conf:"Established", status:"observed", src:["T1-1"]},
+  {from:"n2", to:"n3", rel:"executed-on", conf:"High",        status:"reported", src:["T1-2"]}
+];
+
+var NW = 168, NH = 62, GX = 244, GY = 104, PAD = 40;
+
+var canvas = document.getElementById("gcanvas");
+var gsvg = document.getElementById("gsvg");
+if(canvas && gsvg){
+  var view = {x:0, y:0, k:1};
+  var pos = {};                       // live positions
+  var home = {};                      // authored positions for Reset
+  var sel = null, hideDisputed = false, query = "";
+  var offType = {};
+
+  NODES.forEach(function(n){
+    home[n.id] = {x: PAD + n.col * GX, y: PAD + n.row * GY};
+    pos[n.id] = {x: home[n.id].x, y: home[n.id].y};
+  });
+
+  function visible(n){
+    if(offType[n.type]) return false;
+    if(hideDisputed && n.status === "disputed") return false;
+    if(query && n.title.toLowerCase().indexOf(query) < 0 &&
+       n.type.toLowerCase().indexOf(query) < 0) return false;
+    return true;
+  }
+  function byId(id){ for(var i=0;i<NODES.length;i++) if(NODES[i].id===id) return NODES[i]; return null; }
+  function neighbours(id){
+    var s = {};
+    EDGES.forEach(function(e){ if(e.from===id) s[e.to]=1; if(e.to===id) s[e.from]=1; });
+    return s;
+  }
+
+  function render(){
+    clear(gsvg);
+    var g = svg("g", {transform:"translate("+view.x+","+view.y+") scale("+view.k+")"});
+    gsvg.appendChild(g);
+
+    var defs = svg("defs");
+    [["ah","#6A7276"],["ahHot","var(--red)"]].forEach(function(m){
+      var mk = svg("marker", {id:m[0], markerWidth:"8", markerHeight:"8", refX:"7",
+        refY:"3", orient:"auto", markerUnits:"strokeWidth"});
+      mk.appendChild(svg("path", {d:"M0,0 L7,3 L0,6 z", fill:m[1]}));
+      defs.appendChild(mk);
+    });
+    g.appendChild(defs);
+
+    var nb = sel ? neighbours(sel) : null;
+
+    EDGES.forEach(function(e){
+      var a = byId(e.from), b = byId(e.to);
+      if(!a || !b || !visible(a) || !visible(b)) return;
+      if(hideDisputed && e.status === "disputed") return;
+      var p1 = pos[e.from], p2 = pos[e.to];
+      var x1 = p1.x + NW, y1 = p1.y + NH/2, x2 = p2.x, y2 = p2.y + NH/2;
+      var mx = (x1 + x2) / 2;
+      var hot = sel && (e.from === sel || e.to === sel);
+      var cls = "gedge" + (hot ? " hot" : (sel ? " dim" : ""));
+      g.appendChild(svg("path", {class:cls,
+        d:"M"+x1+","+y1+" L"+mx+","+y1+" L"+mx+","+y2+" L"+x2+","+y2,
+        "marker-end":"url(#" + (hot ? "ahHot" : "ah") + ")"}));
+      var lt = svg("text", {class:"gelabel" + (hot ? " hot" : ""), x:mx, y:(y1+y2)/2 - 5,
+        "text-anchor":"middle"});
+      lt.textContent = e.rel;
+      g.appendChild(lt);
+    });
+
+    NODES.forEach(function(n){
+      if(!visible(n)) return;
+      var p = pos[n.id];
+      var cls = "gnode" + (sel === n.id ? " sel" : (sel && !nb[n.id] ? " dim" : ""));
+      var grp = svg("g", {class:cls, transform:"translate("+p.x+","+p.y+")",
+        tabindex:"0", role:"button"});
+      grp.setAttribute("aria-label", n.title + ", " + (TYPES[n.type]||{}).label +
+        ", confidence " + n.conf + ", " + n.status);
+      grp.appendChild(svg("rect", {width:NW, height:NH,
+        fill:(TYPES[n.type]||{}).fill || "#E8E8E8"}));
+      var t1 = svg("text", {class:"gtype", x:8, y:14}); t1.textContent =
+        ((TYPES[n.type]||{}).label || n.type).toUpperCase();
+      grp.appendChild(t1);
+      var t2 = svg("text", {class:"gtitle", x:8, y:32});
+      t2.textContent = n.title.length > 26 ? n.title.slice(0,25) + "\u2026" : n.title;
+      grp.appendChild(t2);
+      var t3 = svg("text", {class:"gmeta", x:8, y:48});
+      t3.textContent = n.conf + " \u00b7 " + n.status + " \u00b7 " + (n.src||[]).join(",");
+      grp.appendChild(t3);
+      if(n.seq != null){
+        grp.appendChild(svg("rect", {x:NW-22, y:6, width:16, height:14, fill:"#fff",
+          stroke:"#0B0C0D", "stroke-width":"1"}));
+        var t4 = svg("text", {class:"gseq", x:NW-14, y:17, "text-anchor":"middle"});
+        t4.textContent = String(n.seq);
+        grp.appendChild(t4);
+      }
+      grp.addEventListener("click", function(ev){ ev.stopPropagation(); pick(n.id); });
+      grp.addEventListener("keydown", function(ev){
+        if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); pick(n.id); }});
+      grp.addEventListener("pointerdown", startDrag(n.id));
+      g.appendChild(grp);
+    });
+  }
+
+  function startDrag(id){
+    return function(ev){
+      if(ev.button != null && ev.button !== 0) return;
+      ev.stopPropagation();
+      var sx = ev.clientX, sy = ev.clientY, ox = pos[id].x, oy = pos[id].y, moved = false;
+      function mv(e2){
+        moved = true;
+        pos[id] = {x: ox + (e2.clientX - sx)/view.k, y: oy + (e2.clientY - sy)/view.k};
+        render();
+      }
+      function up(){ window.removeEventListener("pointermove", mv);
+        window.removeEventListener("pointerup", up); if(!moved) pick(id); }
+      window.addEventListener("pointermove", mv);
+      window.addEventListener("pointerup", up);
+    };
+  }
+
+  function pick(id){ sel = (sel === id ? null : id); render(); inspect(); }
+
+  var insp = document.getElementById("ginspect");
+  function inspect(){
+    clear(insp);
+    if(!sel){
+      insp.appendChild(el("div", {class:"k"}, "Inspector"));
+      insp.appendChild(el("p", {style:"margin:4px 0 0;font-size:14px"},
+        "Select a node to see its evidence, confidence, and immediate relationships."));
+      return;
+    }
+    var n = byId(sel); if(!n) return;
+    insp.appendChild(el("div", {class:"k"}, (TYPES[n.type]||{}).label || n.type));
+    insp.appendChild(el("h4", null, n.title));
+    var dl = el("dl");
+    [["Confidence", n.conf], ["Status", n.status], ["Sources", (n.src||[]).join(", ")],
+     ["Sequence", n.seq != null ? String(n.seq) : "not part of the numbered path"]]
+      .forEach(function(r){ dl.appendChild(el("dt", null, r[0]));
+                            dl.appendChild(el("dd", null, r[1])); });
+    insp.appendChild(dl);
+    var rel = EDGES.filter(function(e){ return e.from === sel || e.to === sel; });
+    if(rel.length){
+      insp.appendChild(el("div", {class:"k", style:"margin-top:10px"}, "Immediate relationships"));
+      var ul = el("ul", {style:"margin:5px 0 0;font-size:13.5px"});
+      rel.forEach(function(e){
+        var o = byId(e.from === sel ? e.to : e.from);
+        ul.appendChild(el("li", null,
+          (e.from === sel ? "\u2192 " : "\u2190 ") + e.rel + " \u00b7 " +
+          (o ? o.title : "?") + " (" + e.conf + ", " + e.status + ")"));
+      });
+      insp.appendChild(ul);
+    }
+  }
+
+  /* Accessible + printable edge register */
+  function edgeTable(){
+    var host = document.getElementById("gtable"); clear(host);
+    var cap = el("div", {class:"legend"}, "Edge register \u2014 accessible equivalent of the graph");
+    host.appendChild(cap);
+    var tw = el("div", {class:"tw"});
+    var t = el("table");
+    t.appendChild(el("caption", null, "Sourced relationship edge register"));
+    var th = el("thead"), tr = el("tr");
+    ["From","Relationship","To","Confidence","Status","Sources"].forEach(function(h){
+      tr.appendChild(el("th", {scope:"col"}, h)); });
+    th.appendChild(tr); t.appendChild(th);
+    var tb = el("tbody");
+    EDGES.forEach(function(e){
+      var a = byId(e.from), b = byId(e.to), r = el("tr");
+      [a ? a.title : e.from, e.rel, b ? b.title : e.to, e.conf, e.status, (e.src||[]).join(", ")]
+        .forEach(function(v, i){
+          var td = el("td", i === 1 || i === 5 ? {class:"m"} : null, v); r.appendChild(td); });
+      tb.appendChild(r);
+    });
+    t.appendChild(tb); tw.appendChild(t); host.appendChild(tw);
+  }
+
+  function legend(){
+    var host = document.getElementById("gfilters"); clear(host);
+    var seen = {};
+    NODES.forEach(function(n){ seen[n.type] = 1; });
+    Object.keys(seen).forEach(function(ty){
+      var b = el("button", {class:"chip", type:"button", "aria-pressed":"true"});
+      var sw = el("i"); sw.style.background = (TYPES[ty]||{}).fill || "#E8E8E8";
+      b.appendChild(sw);
+      b.appendChild(document.createTextNode((TYPES[ty]||{}).label || ty));
+      b.addEventListener("click", function(){
+        offType[ty] = !offType[ty];
+        b.setAttribute("aria-pressed", offType[ty] ? "false" : "true");
+        render();
+      });
+      host.appendChild(b);
+    });
+    var lg = document.getElementById("glegend");
+    clear(lg);
+    lg.appendChild(document.createTextNode(
+      "Node fill encodes type and is repeated in the label. Numbered badges mark the primary " +
+      "causal path only; evidence, control and response nodes are identified by type instead."));
+  }
+
+  function bounds(){
+    var xs = [], ys = [];
+    NODES.forEach(function(n){ if(!visible(n)) return;
+      xs.push(pos[n.id].x, pos[n.id].x + NW); ys.push(pos[n.id].y, pos[n.id].y + NH); });
+    if(!xs.length) return null;
+    return {x0:Math.min.apply(null,xs), x1:Math.max.apply(null,xs),
+            y0:Math.min.apply(null,ys), y1:Math.max.apply(null,ys)};
+  }
+  function fit(){
+    var b = bounds(); if(!b) return;
+    var w = canvas.clientWidth, h = canvas.clientHeight, m = 30;
+    var k = Math.min((w - m*2)/(b.x1 - b.x0 || 1), (h - m*2)/(b.y1 - b.y0 || 1), 1.6);
+    view.k = Math.max(0.25, k);
+    view.x = (w - (b.x1 - b.x0) * view.k)/2 - b.x0 * view.k;
+    view.y = (h - (b.y1 - b.y0) * view.k)/2 - b.y0 * view.k;
+    render();
+  }
+
+  /* pan on empty canvas */
+  canvas.addEventListener("pointerdown", function(ev){
+    if(ev.target.closest && ev.target.closest(".gnode")) return;
+    canvas.classList.add("pan");
+    var sx = ev.clientX, sy = ev.clientY, vx = view.x, vy = view.y;
+    function mv(e2){ view.x = vx + (e2.clientX - sx); view.y = vy + (e2.clientY - sy); render(); }
+    function up(){ canvas.classList.remove("pan");
+      window.removeEventListener("pointermove", mv); window.removeEventListener("pointerup", up); }
+    window.addEventListener("pointermove", mv); window.addEventListener("pointerup", up);
+  });
+  canvas.addEventListener("wheel", function(ev){
+    ev.preventDefault();
+    var f = ev.deltaY < 0 ? 1.12 : 1/1.12;
+    var r = canvas.getBoundingClientRect(), cx = ev.clientX - r.left, cy = ev.clientY - r.top;
+    view.x = cx - (cx - view.x) * f; view.y = cy - (cy - view.y) * f;
+    view.k = Math.max(0.25, Math.min(2.5, view.k * f));
+    render();
+  }, {passive:false});
+  canvas.addEventListener("click", function(ev){
+    if(!(ev.target.closest && ev.target.closest(".gnode"))){ sel = null; render(); inspect(); }});
+  canvas.addEventListener("keydown", function(ev){
+    var vis = NODES.filter(visible); if(!vis.length) return;
+    var i = sel ? vis.map(function(n){return n.id;}).indexOf(sel) : -1;
+    if(ev.key === "ArrowRight" || ev.key === "ArrowDown"){
+      ev.preventDefault(); sel = vis[(i + 1) % vis.length].id; render(); inspect(); }
+    if(ev.key === "ArrowLeft" || ev.key === "ArrowUp"){
+      ev.preventDefault(); sel = vis[(i - 1 + vis.length) % vis.length].id; render(); inspect(); }
+    if(ev.key === "Escape"){ sel = null; render(); inspect(); }
+  });
+
+  document.getElementById("gq").addEventListener("input", function(){
+    query = this.value.trim().toLowerCase(); render(); });
+  document.getElementById("gconf").addEventListener("click", function(){
+    hideDisputed = !hideDisputed;
+    this.setAttribute("aria-pressed", hideDisputed ? "true" : "false");
+    this.textContent = hideDisputed ? "Show disputed" : "Hide disputed";
+    render();
+  });
+  document.getElementById("gfit").addEventListener("click", fit);
+  document.getElementById("greset").addEventListener("click", function(){
+    NODES.forEach(function(n){ pos[n.id] = {x:home[n.id].x, y:home[n.id].y}; });
+    sel = null; query = ""; hideDisputed = false; offType = {};
+    document.getElementById("gq").value = "";
+    var hb = document.getElementById("gconf");
+    hb.setAttribute("aria-pressed","false"); hb.textContent = "Hide disputed";
+    legend(); fit(); inspect();
+  });
+  document.getElementById("gfull").addEventListener("click", function(){
+    var b = this;
+    if(!document.fullscreenElement){
+      (canvas.requestFullscreen ? canvas.requestFullscreen() : Promise.reject())
+        .then(function(){ b.textContent = "Exit full screen"; setTimeout(fit, 60); })
+        .catch(function(){});
+    } else { document.exitFullscreen(); b.textContent = "Full screen"; }
+  });
+  document.addEventListener("fullscreenchange", function(){
+    var b = document.getElementById("gfull");
+    b.textContent = document.fullscreenElement ? "Exit full screen" : "Full screen";
+    setTimeout(fit, 60);
+  });
+
+  /* Local, offline PNG export of the whole graph at >=2400px */
+  document.getElementById("gpng").addEventListener("click", function(){
+    var b = bounds(); if(!b) return;
+    var m = 40, w = (b.x1 - b.x0) + m*2, h = (b.y1 - b.y0) + m*2;
+    var scale = Math.max(2400 / w, 2);
+    var saveV = {x:view.x, y:view.y, k:view.k}, saveSel = sel;
+    view = {x: -b.x0 + m, y: -b.y0 + m, k: 1}; sel = null; render();
+    var clone = gsvg.cloneNode(true);
+    clone.setAttribute("xmlns", SVGNS);
+    clone.setAttribute("width", w); clone.setAttribute("height", h);
+    clone.setAttribute("viewBox", "0 0 " + w + " " + h);
+    var cs = getComputedStyle(document.body);
+    var st = document.createElementNS(SVGNS, "style");
+    st.textContent =
+      ".gedge{fill:none;stroke:#6A7276;stroke-width:1.4}.gedge.hot{stroke:#E53B32}" +
+      ".gelabel{font-family:monospace;font-size:9px;fill:#3C4245}" +
+      ".gtitle{font-family:Arial,sans-serif;font-weight:700;font-size:11.5px;fill:#0B0C0D}" +
+      ".gtype{font-family:monospace;font-size:8px;fill:#3C4245}" +
+      ".gmeta{font-family:monospace;font-size:8px;fill:#3C4245}" +
+      ".gseq{font-family:monospace;font-size:9px;font-weight:600;fill:#0B0C0D}" +
+      ".gnode rect{stroke:#0B0C0D;stroke-width:1.2}";
+    clone.insertBefore(st, clone.firstChild);
+    var bg = document.createElementNS(SVGNS, "rect");
+    bg.setAttribute("width", w); bg.setAttribute("height", h);
+    bg.setAttribute("fill", cs.getPropertyValue("--surface").trim() || "#F8F9F9");
+    clone.insertBefore(bg, st.nextSibling);
+    var xml = new XMLSerializer().serializeToString(clone);
+    var url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(xml);
+    var img = new Image();
+    img.onload = function(){
+      var cv = document.createElement("canvas");
+      cv.width = Math.round(w * scale); cv.height = Math.round(h * scale);
+      var ctx = cv.getContext("2d");
+      ctx.fillStyle = cs.getPropertyValue("--surface").trim() || "#F8F9F9";
+      ctx.fillRect(0, 0, cv.width, cv.height);
+      ctx.drawImage(img, 0, 0, cv.width, cv.height);
+      var a = document.createElement("a");
+      a.download = "incident-graph.png";
+      a.href = cv.toDataURL("image/png");
+      a.click();
+      view = saveV; sel = saveSel; render();
+    };
+    img.onerror = function(){ view = saveV; sel = saveSel; render(); };
+    img.src = url;
+  });
+
+  legend(); edgeTable(); inspect();
+  window.addEventListener("resize", function(){ fit(); });
+  fit();
+}
+
+/* ============================================================
+   3. SHELL — theme, drawer, progress, scrollspy, dock
+   ============================================================ */
+(function(){
+  var root = document.documentElement;
+  var mq = window.matchMedia && window.matchMedia("(prefers-color-scheme:dark)");
+  if(mq && mq.matches) root.setAttribute("data-theme", "dark");
+  var tb = document.getElementById("theme");
+  if(tb) tb.addEventListener("click", function(){
+    root.setAttribute("data-theme",
+      root.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  });
+
+  var toc = document.getElementById("toc"), scrim = document.getElementById("scrim"),
+      menu = document.getElementById("menu"), theme = document.getElementById("theme"),
+      main = document.getElementById("main"), footer = document.querySelector(".report-footer"),
+      dockNav = document.querySelector(".dock"), mobile = window.matchMedia("(max-width:1099px)");
+  function setMenu(open, restoreFocus){
+    if(!toc) return;
+    open = Boolean(open && mobile.matches);
+    toc.classList.toggle("open", open);
+    if(scrim) scrim.classList.toggle("on", open);
+    if(menu) menu.setAttribute("aria-expanded", open ? "true" : "false");
+    if(mobile.matches){
+      toc.toggleAttribute("inert", !open);
+      toc.setAttribute("aria-hidden", open ? "false" : "true");
+    } else {
+      toc.removeAttribute("inert");
+      toc.removeAttribute("aria-hidden");
+    }
+    [theme, main, footer, dockNav].forEach(function(node){
+      if(node) node.toggleAttribute("inert", open);
+    });
+    document.body.style.overflow = open ? "hidden" : "";
+    if(open){
+      var first = toc.querySelector("a");
+      if(first) first.focus();
+    } else if(restoreFocus && menu && mobile.matches){
+      menu.focus();
+    }
+  }
+  if(menu) menu.addEventListener("click", function(){ setMenu(!toc.classList.contains("open"), true); });
+  if(scrim) scrim.addEventListener("click", function(){ setMenu(false, true); });
+  if(toc) toc.addEventListener("click", function(e){ if(e.target.closest("a")) setMenu(false, false); });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && toc.classList.contains("open")){ setMenu(false, true); return; }
+    if(e.key !== "Tab" || !toc.classList.contains("open")) return;
+    var items = [menu].concat([].slice.call(toc.querySelectorAll("a")));
+    var first = items[0], last = items[items.length - 1];
+    if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  });
+  if(mobile.addEventListener) mobile.addEventListener("change", function(){ setMenu(false, false); });
+  setMenu(false, false);
+
+  var bar = document.getElementById("progbar");
+  function onScroll(){
+    if(!bar) return;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = h > 0 ? (window.scrollY / h * 100) + "%" : "0%";
+  }
+  window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
+
+  var links = [].slice.call(document.querySelectorAll(".toc a"));
+  var dock = [].slice.call(document.querySelectorAll(".dock a"));
+  var secs = [].slice.call(document.querySelectorAll("section[id]"));
+  if("IntersectionObserver" in window && secs.length){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(!e.isIntersecting) return;
+        var id = e.target.id;
+        links.forEach(function(l){ l.classList.toggle("on", l.getAttribute("href") === "#" + id); });
+        dock.forEach(function(d){ d.classList.toggle("on", d.getAttribute("data-dock") === id); });
+      });
+    }, {rootMargin:"-12% 0px -78% 0px"});
+    secs.forEach(function(s){ io.observe(s); });
+  }
+
+  /* horizontal-scroll hints only where they are real */
+  document.querySelectorAll(".tw").forEach(function(w){
+    if(w.scrollWidth <= w.clientWidth + 8){
+      var n = w.nextElementSibling;
+      if(n && n.classList.contains("hint")) n.style.display = "none";
+    }
+  });
+})();
+})();
+</script>
+</body>
+</html>

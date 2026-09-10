@@ -53,8 +53,9 @@ defenders who need a clear answer to: **“What should we do differently now?”
 | [Open ChatGPT](https://chatgpt.com/) and attach the [analysis prompt](prompt/cybersecurity-incident-analysis-prompt.md). | [Open Claude](https://claude.ai/new) and attach the [analysis prompt](prompt/cybersecurity-incident-analysis-prompt.md). |
 
 For repeat ChatGPT use, create a Custom GPT once using the
-[ChatGPT Custom GPT setup](chatgpt_custom_gpt/README.md). Upload the analysis prompt as the
-GPT's Knowledge file, then start future chats with only the incident identifier.
+[ChatGPT Custom GPT setup](chatgpt_custom_gpt/README.md). Upload the analysis prompt and
+[shared HTML scaffold](report/report-scaffold.html) as Knowledge files, then start future
+chats with only the incident identifier.
 
 For repeat Claude use, upload the packaged
 [Claude skill](claude_skill/incident-analysis.skill) to Claude's Skills/Capabilities area
@@ -78,6 +79,7 @@ HTML scaffold, validation helper, and Archify-backed graph instructions.
 
 ```text
 prompt/       Latest reusable incident-analysis prompt
+report/       Shared Overview-first accessible HTML scaffold
 chatgpt_custom_gpt/ Reusable ChatGPT Custom GPT setup
 claude_skill/ Packaged Claude skill for reusable incident analysis
 src/graph/    React Flow reference graph source and styles
@@ -125,9 +127,10 @@ The validator checks:
 - every package actually included by esbuild has matching versioned notices in both
   [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt) and the distributable HTML.
 
-The number and titles of sections inside each Part may vary by incident. That flexibility is
-intentional: the shell is fixed, while the analysis adapts to the available evidence and the
-incident's unique technical and organizational lessons.
+Every report retains canonical Sections 01–25 in order so reports remain comparable and
+deep links remain stable. Analytical depth and incident-specific titles still adapt to the
+available evidence; unsupported functions remain visible with concise `unknown externally`
+or `not applicable` boundaries rather than speculative filler.
 
 ## Contributing
 

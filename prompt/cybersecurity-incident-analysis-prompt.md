@@ -36,7 +36,9 @@ or send a second prompt.
 No coding tools are required. When `deliverable` is `self-contained interactive HTML`,
 the default instruction is to create and return the finished `.html` file directly.
 Part 8 also defines an optional Python workflow for users who want reproducible local
-regeneration.
+regeneration. When `report/report-scaffold.html` is available in the workspace or uploaded
+Knowledge, use it as the concrete shell: replace its placeholders and incident data while
+preserving its structure, accessibility behavior, navigation, and interaction code.
 
 **Internal workflow.** Scoping still happens first because it is a research task with a
 wrong answer. It is an internal quality gate, not a separate user workflow. Continue
@@ -303,7 +305,7 @@ CSIRT Services Framework, then apply the correct document profile:
 
 | Profile | Purpose | Required treatment |
 |---|---|---|
-| **Public-source incident analysis** (default) | Explain a publicly documented incident and derive defensible actions | Use the applicable sections from the 25-section catalog below and record exclusions internally. Mark unavailable internal case, business-impact, custody, notification, and recovery facts `unknown externally` or `not applicable`; never simulate them. |
+| **Public-source incident analysis** (default) | Explain a publicly documented incident and derive defensible actions | Render all 25 numbered sections below in their canonical Parts. Scale depth to the evidence; when a function is unsupported, retain its section with a concise sourced `unknown externally` or `not applicable` explanation. Never simulate unavailable internal case, business-impact, custody, notification, or recovery facts. |
 | **Active incident case record** | Maintain current operational state and coordinate response | Add the live incident record, action/decision log, affected-entity register, containment/recovery tracker, communications log, and next update time. Clearly label preliminary findings. |
 | **Forensic report** | Document an authorized examination of supplied evidence | Add scope/authority, examiner, methods and tool versions, evidence manifest and custody, time-normalization method, reproducibility, limitations, findings and opinions. Never call public-source research a forensic examination. |
 | **Post-incident review** | Assess what happened, how response performed, and how recurrence will be prevented | Add planned-versus-actual response, detection/response/recovery metrics, control and playbook failures, causal analysis, corrective-action tracker, closure criteria, residual risk and approvals. |
@@ -528,19 +530,20 @@ Attach one to every significant claim:
 Order sections by **decision utility**, not chronology. A reader who stops after Part I
 must still be able to act.
 
-### Section applicability gate
+### Section applicability and depth gate
 
-The numbered structure is a **canonical catalog, not a requirement to manufacture 25
-substantive sections for every incident**. Before drafting, classify each section as
-`required`, `applicable`, `merged`, or `not applicable`, with a one-line reason. Do not
-render empty, repetitive, or speculative sections merely to preserve a number.
+The numbered structure is a **fixed 25-section report contract**. Render Sections 01–25
+in canonical order under Parts I–VII for every incident. Before drafting, classify each
+section as `substantive`, `concise`, `unknown externally`, or `not applicable`, with a
+one-line reason in working state. This classification controls depth, not presence.
 
-Always preserve these decision-critical functions, though closely related functions may
-be merged for briefing depth: executive brief; incident identity/scope and material facts;
-impact and uncertainty; immediate actions or clearly stated absence of current action;
-control recommendations; implementation ownership; chronology; evidence register; sources.
+Do not manufacture analysis merely to fill a section. When evidence does not support a
+section's function, retain its number, category, incident-specific title, and a concise
+sourced explanation of what is unknown or why the function does not apply. Never merge
+away, renumber, or omit a canonical section. Closely related sections may cross-reference
+one another to avoid repetition, but each must still perform its distinct decision function.
 
-Use the remaining sections only when the incident and audience support them:
+Apply these evidence gates within the retained sections:
 
 - Immediate triage and detection engineering require actionable exposure, telemetry, or a
   responder audience.
@@ -558,9 +561,8 @@ Use the remaining sections only when the incident and audience support them:
   observed performance from recommendations.
 
 Keep the applicability decision in working state; do **not** display a `Report applicability`
-statement in the finished artifact unless the user explicitly requests it. Keep canonical
-section numbers for included sections so reports remain comparable; navigation must index
-every Part plus only the sections actually rendered.
+statement in the finished artifact unless the user explicitly requests it. Navigation must
+index every Part and every canonical Section 01–25.
 
 ### What is fixed and what adapts to the incident
 
@@ -569,22 +571,19 @@ Two different things are being decided, and they must not be confused:
 | Layer | Rule | Why |
 |---|---|---|
 | **Presentation shell** — page order, Part dividers, layout grid, navigation, typography, colour tokens, outer component anatomy, graph slot and embedding contract, print behaviour | **Fixed. Identical for every incident.** Reproduce the reference contract in Part 8 exactly. | Reports must be recognisable as the same publication and comparable side by side |
-| **Section inventory inside each Part** — which numbered sections appear, how many, their depth and their incident-specific titles | **Adaptive.** Driven by the evidence, per the applicability gate above | Every incident is different; forcing 25 substantive sections manufactures filler |
+| **Section inventory inside each Part** — Sections 01–25, their order, stable categories and anchors | **Fixed.** Every section renders in canonical order | Reports remain directly comparable and deep links stay stable |
+| **Section depth and incident-specific titles** — whether treatment is substantive, concise, unknown externally or not applicable | **Adaptive.** Driven by the evidence, per the applicability gate above | Every incident is different; fixed presence must not manufacture filler |
 | **Analytical content** — findings, evidence topology, graph nodes and edges, chronology, controls | **Adaptive.** Driven entirely by sourced evidence | The analysis must follow the facts |
 
-**All eight Parts (0 and I–VII) are always rendered.** A Part is a fixed structural
-divider, not a section. If an entire Part would otherwise be empty because no section
-inside it is applicable, still render the Part divider and place a single short sourced
-statement under it explaining what the public evidence does not support — never delete the
-Part and never pad it with speculation.
+**All eight Parts (0 and I–VII) and all 25 canonical sections are always rendered.** A Part
+is a fixed structural divider; a section is a stable analytical function. Unsupported
+functions receive a short sourced evidence-boundary statement inside their canonical
+section rather than being deleted or padded with speculation.
 
-Within a Part, the number of sections is expected to vary between incidents. Rendering
-three sections in one Part for one incident and six for another is correct behaviour, not
-an inconsistency. Adding an extra incident-specific section inside the correct Part is
-permitted when the evidence genuinely supports a distinct analytical function that no
-canonical section covers; give it the next unused number above 25, a category label in the
-same style, and place it in the Part where it belongs. Never renumber canonical sections to
-accommodate it.
+Adding an extra incident-specific section inside the correct Part is permitted when the
+evidence genuinely supports a distinct analytical function that no canonical section
+covers; give it the next unused number above 25, a category label in the same style, and
+place it in the Part where it belongs. Never renumber or replace canonical sections.
 
 Never vary the shell to suit an incident. Layout, spacing, outer component anatomy, graph
 appearance, and navigation must not change because the subject matter changed.
@@ -616,7 +615,7 @@ sections. Include Part titles in both desktop and mobile navigation. Part 0 must
 the incident parameters and document control material rather than appearing as an empty
 divider.
 
-Every rendered numbered section must show both its stable category label and its
+Every numbered section must show both its stable category label and its
 incident-specific title as two distinct heading levels:
 
 ```text
@@ -660,9 +659,12 @@ or `unknown externally` rather than omitting a field:
   due time and next update time for internal profiles.
 
 ### Part I — For decision makers
-1. **Executive brief.** Plain language, no unexplained jargon. Include **3–4 concrete
-   analogies** drawn from physical-world domains (logistics, building security, food
-   safety, finance). Analogies must illuminate the *mechanism*, not just the severity.
+1. **Executive brief.** The compact `Incident in brief` within the cover is the report's
+  short factual starting point. Retain this deeper decision-maker section in the original
+  report structure without repeating the overview. Explain the structural finding, current
+  decision, and cost/risk drivers in plain language without unexplained jargon. Include
+  **3–4 concrete analogies** drawn from physical-world domains only where they illuminate
+  the mechanism; keep them here, never in the cover overview, and never use them as evidence.
 2. **Immediate triage.** Written to be executed, not studied: scope determination →
    hunting commands/queries → containment → evidence preservation → safe restart.
   Lead with the most common scoping error. Include forensic-readiness actions: clock and
@@ -687,7 +689,16 @@ or `unknown externally` rather than omitting a field:
 7. **Anatomy stage by stage.** The deep technical core. For each stage: preconditions,
   exact mechanism, source and target entities, identity/privilege used, protocol or trust
   edge crossed, evidence produced, what the attacker gained, and what would have broken it.
-  Include a typed incident relationship graph specified in Part 8.
+  Include a typed incident relationship graph specified in Part 8. Add an explicit causal
+  analysis that distinguishes the initiating event or trigger, technical root cause,
+  contributing control/process/human/governance conditions, failed or absent detection and
+  response barriers, and systemic organisational causes. State evidence and confidence for
+  each causal claim, test plausible alternatives, and avoid reducing a multi-factor incident
+  to a single vulnerable component, individual action, or generic "process failure."
+  Include a causal register with: layer (`trigger`, `technical root cause`, `contributing
+  condition`, `systemic cause`); causal statement; evidence/source IDs; confidence and
+  alternative explanation; failed barrier; corrective action; owner; due date; validation
+  measure; and closure status. Cross-link corrective actions to Parts V and VI.
 
 ### Part III — Consequence
 8. **What was taken** — capability vs. observation, kept separate. Include affected data
@@ -823,7 +834,9 @@ Write **two registers in one document**, clearly separated by Part rather than b
 **Executive register (Part I, Part VI)**
 - No unexplained acronym. Expand on first use, every time.
 - Lead with consequence, follow with mechanism.
-- Use analogies, concrete numbers, and comparisons to familiar risks.
+- Prefer sourced concrete numbers and comparisons to familiar risks. Use an analogy only in
+  later explanatory analysis when it materially clarifies a difficult mechanism; never put
+  one in the cover or `Incident in brief`, and never let it replace the sourced explanation.
 - Frame cost drivers explicitly — this class of incident is routinely under-costed
   because there is no ransom demand and often no confirmed data loss.
 - Never write "sophisticated attack" as an explanation. It explains nothing and usually
@@ -909,22 +922,25 @@ every report profile, and both generation modes:
 1. Skip link, reading-progress rule
 2. Sticky utility header — brand/incident slug, plus `Menu` (mobile), `Print`, `Theme`
 3. AI-generated/not-official notice
-4. Cover — taxonomy bracket, headline, summary paragraph, four-column fact rail
+4. Cover / compact overview — taxonomy bracket, headline, factual incident brief,
+   four-column fact rail, and management shortcuts
 5. **Incident pathway** — the staged/lane analytical instrument
 6. **Sourced relationship graph**
 7. **Campaign chronology**
 8. `Part 0 — Incident parameters` with the document-control block
-9. `Part I` … `Part VII`, each divider followed by its applicable numbered sections
+9. `Part I` … `Part VII`, each divider followed by all of its canonical numbered sections
 10. Footer with the repeated AI notice
 
-The three interactive surfaces (5–7) always sit **between the cover and Part 0**, never
-after Part 0 and never interleaved among the numbered sections. Part 0 opens the numbered
-report. Do not move, merge, or reorder these blocks.
+This retains the original report format: the cover is also the short factual Overview; it
+is not a new standalone report section. The three interactive surfaces (5–7) always sit
+**between the cover and Part 0**, never after Part 0 and never interleaved among numbered
+sections. Part 0 opens the numbered report. Do not move, merge, or reorder these blocks.
 
 Use these stable anchors and navigation labels so reports remain comparable and linkable:
+`#overview` (`START` / Incident overview), `#overview-shortcuts` (Quick routes),
 `#interactive-attack` (`PATH` / Incident pathway), `#interactive-graph` (`MAP` / Sourced
 relationship graph), `#interactive-timeline` (`TIME` / Campaign chronology), `#part-0`
-through `#part-7`, and `#section-1` … `#section-25` for rendered sections.
+through `#part-7`, and `#s01` through `#s25` for the canonical numbered sections.
 
 ### Mandatory shell anatomy
 
@@ -932,15 +948,25 @@ These are structural constants. Reproduce them regardless of incident or environ
 
 - **Utility header** — sticky, ~64–72px, one-pixel bottom rule, square brand mark
   containing the incident slug, controls right-aligned, 44px minimum targets.
-- **Cover** — bracketed incident taxonomy line, a single strong headline, a summary
-  paragraph of roughly 45–75 words, and a **four-column** fact rail of one-line
-  specifications. The fact rail is always four columns on desktop; it collapses to two on
-  narrow screens. Keep the cover short enough that the incident pathway below it is
-  visibly suggested in the first viewport.
+- **Cover / compact overview** — the target of `Overview` links. Keep the original bracketed
+  taxonomy, literal incident headline, and **four-column** fact rail. Between them, include a
+  visible `Incident in brief` label and a factual 60–90 word summary covering incident
+  identity and scope, current status, material impact, likely or established root cause,
+  response/recovery state, overall confidence, and the most important unknown. Do not use
+  storytelling, analogies, scene-setting, rhetorical hooks, or a chronology.
+- **Quick routes** — inside the cover, add a compact navigation region labelled `Quick
+  routes`, not a new report section. Link to these eight management views using the stable
+  anchors already present in the report: `Situation & scope` (`#control`), `Chronology`
+  (`#interactive-timeline`), `Root cause & attack path` (`#part-2`), `Impact & blast radius`
+  (`#part-3`), `Accountability` (`#part-4`), `Controls & recovery` (`#part-5`), `Governance
+  & ownership` (`#part-6`), and `Evidence & lessons` (`#part-7`). These are routes into the
+  full analysis, not eight mini-summaries and not a replacement for Parts 0–VII.
 - **Reading layout** — a two-column grid: a persistent left navigation column of roughly
   250–280px containing a section-find input and the indexed contents, and the content
-  column beside it. The navigation lists the three interactive surfaces first, then every
-  Part and every rendered section, with active-location state.
+  column beside it. The navigation retains the original hierarchy: the three interactive
+  surfaces first, then every Part and every canonical section, with active-location state. Add one
+  `Overview` entry targeting the cover; do not duplicate all eight quick routes in the
+  persistent contents.
 - **Numbered sections** — each rendered as a two-column row: a 140–170px section-index
   column carrying the number and category label, and the readable content column beside it.
 - **Mobile dock** — fixed, safe-area-aware, exactly four destinations: Overview, Attack,
@@ -957,8 +983,11 @@ Use these values, not approximations of them:
 - Body copy 16–18px at roughly 1.55–1.7 line height, 65–72 characters per line.
 - Square geometry: 0–2px radii only. One-pixel structural rules. No floating card
   dashboard, no pills, no glass, no shadow-heavy surfaces.
-- Local grotesk stack only — `Arial Narrow`, `Aptos Display`, `Helvetica Neue`, Arial.
-  Uppercase for display headings, controls and indexed labels; sentence case for body copy.
+- Use `Aptos`, `Helvetica Neue`, Helvetica, Arial, and `system-ui` for body copy. Use
+  `Arial Narrow`, `Aptos Display`, `Helvetica Neue`, Helvetica, Arial, and `system-ui` for
+  concise display labels and headings. Use 700 weight instead of condensed all-caps for
+  long headings. Letter spacing is `0`; never use negative letter spacing. Sentence case is
+  the default; uppercase is limited to short taxonomy, control, and index labels.
 - Red marks active navigation, critical state and directional emphasis only. It is never a
   large reading surface.
 
@@ -1133,9 +1162,11 @@ every load-bearing claim carrying its source inline.
   third-party logos, images, fonts, source CSS, product copy, badges, or layout replicas.
 - Compose it exactly as the fixed page order and shell anatomy require: squared utility
   header and reading-progress rule; prominent AI provenance notice; cross-rule cover with
-  bracketed incident taxonomy, compact title/summary and a four-column fact specification
-  rail; desktop indexed contents column; optional slim red evidence marker on wide screens;
-  full-width graphite incident pathway; Archify-backed relationship graph or labelled
+  bracketed incident taxonomy, literal title, compact factual `Incident in brief`, a
+  four-column fact specification rail, and quick routes spanning situation/scope, chronology,
+  root cause, impact, accountability, controls/recovery, governance/ownership, and
+  evidence/lessons; desktop indexed contents column; optional slim red evidence marker on
+  wide screens; full-width graphite incident pathway; Archify-backed relationship graph or labelled
   Archify fallback in the fixed graph frame; framed chronology with explicit controls and
   persistent scrollbar; then Part 0 and the applicable
   numbered analysis as a 140–170px section-index column plus readable content column. Do not
@@ -1215,20 +1246,39 @@ every load-bearing claim carrying its source inline.
   keep node text readable instead of shrinking the entire graph to fit. Keep all
   implementation, styles, library runtime, and graph data inline in the self-contained file.
 - Sticky section navigation, reading-progress indicator, and a mobile drawer.
-- The desktop section finder and mobile drawer must index every primary interactive surface
-  before the numbered report: Attack Anatomy, Sourced Relationship Graph, and Campaign
-  Chronology. Give each a stable anchor, searchable label, and active-location state; do not
-  limit navigation generation to numbered report sections.
-- Target WCAG 2.2 AA: use semantic landmarks and heading order, a skip link, visible focus,
-  sufficient contrast, 44px touch targets, text alternatives and status announcements;
-  never encode meaning by colour alone. Preserve content and function at 200% zoom.
+- The desktop section finder and mobile drawer must index every primary surface before the
+  numbered report: the cover Overview, Attack Anatomy, Sourced Relationship Graph, and
+  Campaign Chronology. Give each a stable anchor, searchable label, and active-location state;
+  then retain every Part and all 25 canonical sections. Keep the eight management quick routes inside
+  the cover rather than duplicating them in persistent navigation.
+- Target WCAG 2.2 AA. Use one `header`, one `main`, labelled `nav` elements, a `footer`, and
+  correctly nested `h1`–`h4` headings without skipped levels. The first focusable element is
+  a visible-on-focus `Skip to incident overview` link targeting `#overview`; provide a second
+  `Skip to full report` link targeting `#part-0`.
+- Maintain at least 4.5:1 contrast for normal text, 3:1 for large text and meaningful UI
+  boundaries, and a focus indicator with at least 3:1 change of contrast. Every pointer
+  target is at least 44 by 44 CSS pixels, including graph filters and icon-only controls.
+  Never encode status, confidence, selection, or relationship type by colour alone.
+- Give every form control an accessible name. Give icon-only buttons a textual accessible
+  name and visible tooltip. Announce dynamically selected stages, graph details, search
+  results, errors, and chronology position through appropriately scoped live regions without
+  moving focus. Do not use `role="application"` unless all expected application keyboard
+  interactions are implemented and documented in accessible help.
+- Pair every visual, graph, and chronology with an equivalent heading-identified table or
+  ordered list in the same section. Tables need a visible `caption`, scoped column/row
+  headers, and a keyboard-focusable labelled scroll region on narrow screens.
+- Preserve content, reading order, focus visibility, and function at 200% browser zoom and
+  at 320 CSS pixels without two-dimensional page scrolling. At 400% zoom, reflow to one
+  content column; allow horizontal scrolling only inside data tables, code, diagrams, and
+  timelines. Sticky header and bottom dock must not obscure the focused element.
 - Set body copy to a readable 16–18px with approximately 1.55–1.7 line height and 65–72
   characters per line. Use sentence case, tabular numerals for dates/metrics, and monospace
   only for code, hashes, IOCs, identifiers, and timestamps. Justify long-form body paragraphs
   on desktop/print only when hyphenation and line length prevent large word gaps; use left
   alignment on narrow screens. Never justify controls, tables, labels, lists, or callouts.
 - Respect `prefers-reduced-motion`. Make every interaction keyboard and screen-reader
-  navigable. Include a sensible print stylesheet.
+  navigable. Also support `prefers-contrast: more`, forced-colors mode, and text-spacing
+  overrides without clipping or loss of content. Include a sensible print stylesheet.
 - Print must preserve the AI notice, document control, analysis,
   visual equivalents, evidence, and sources; hide interactive chrome; expand scroll regions;
   repeat table headers; use black text on white; control page breaks, widows, and orphans;
@@ -1240,12 +1290,17 @@ every load-bearing claim carrying its source inline.
 Run this first. Any `no` is a defect to fix before the report is returned, regardless of
 how good the analysis is:
 
-- [ ] Does the page follow the fixed order — header, AI notice, cover, incident pathway,
-  relationship graph, chronology, Part 0, Parts I–VII, footer — with the three interactive
-  surfaces between the cover and Part 0?
+- [ ] Does the page retain the original fixed order — header, AI notice, cover/compact
+  overview, incident pathway, relationship graph, chronology, Part 0, Parts I–VII, footer —
+  without introducing a standalone Overview section?
+- [ ] Does the compact `Incident in brief` cover identity/scope, status, impact, root cause,
+  response/recovery, confidence, and the most important unknown without narrative
+  scene-setting or analogies?
+- [ ] Does the cover provide working quick routes to situation/scope, chronology, root cause,
+  impact, accountability, controls/recovery, governance/ownership, and evidence/lessons?
 - [ ] Are all eight Part dividers (`Part 0` and `Part I`–`Part VII`) rendered, in order,
   with their exact titles, and present in both desktop and mobile navigation?
-- [ ] Does every rendered section show its canonical number and category label alongside
+- [ ] Do all Sections 01–25 render in canonical order and show their canonical number and category label alongside
   its incident-specific title, with no renumbering and no invented category labels?
 - [ ] Is the sourced relationship graph authored as Archify typed JSON IR and embedded in
   the report, either as Archify-rendered output or as inert source powering the labelled
@@ -1267,8 +1322,11 @@ how good the analysis is:
 - [ ] Is the reading layout a persistent ~250–280px navigation column plus content column,
   with numbered sections in a 140–170px index column plus content column?
 - [ ] Does the mobile dock contain exactly Overview, Attack, Graph and Report?
-- [ ] Are the fixed colour tokens, square geometry, local grotesk stack and 16–18px body
+- [ ] Are the fixed colour tokens, square geometry, defined local font stacks and 16–18px body
   copy used as specified, with red reserved for active state and directional emphasis?
+- [ ] Does automated accessibility testing report no serious or critical WCAG 2.2 AA
+  violations at 320px, 390px, 200% zoom, and 1440px, followed by keyboard-only checks for
+  skip links, shortcuts, drawer, pathway, graph, chronology, and theme controls?
 - [ ] Would a reader placing this report beside another report from this template
   recognise them as the same publication, and be unable to tell which generation mode,
   application, or model produced each?

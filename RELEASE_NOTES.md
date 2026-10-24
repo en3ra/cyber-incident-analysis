@@ -1,5 +1,31 @@
 # Release Notes
 
+## Unreleased
+
+### Concise executive edition — 2026-10-25
+
+- Added the separate [concise-incident-analysis/ package](concise-incident-analysis/) with
+  its own reusable prompt, assistant instructions, unfilled HTML scaffold, fictional design
+  preview, README and maintenance/validation helpers. Users should navigate to that folder
+  and follow its README to use the concise prompt and companion files together.
+- Introduced eleven executive sections covering incident facts, business impact, leadership
+  decisions, cause/relationships, timeline, financial exposure, response priorities,
+  regulatory implications, lessons/oversight, terminology and evidence/sources.
+- Added an unbranded light/dark design, an interactive sourced relationship-map fallback,
+  timeline, local financial scenarios, glossary, mobile navigation and print equivalents.
+  Native Archify rendering/schema validation is explicitly distinguished from fallback use.
+- Standardised the report title as
+  `Incident Analysis - <actual incident name or CVE> - Executive Briefing`, with a fixed,
+  timezone-labelled **Report Generated Date** at the top right, separate from evidence
+  freshness and incident timestamps.
+- Preserved evidence grading and uncertainty; separated actual costs, planning assumptions
+  and published benchmarks; added incident-specific regulatory screening and standards
+  alignment without claiming certification or legal compliance. IBM primary references and
+  the independent DataBreachCost.com site are accurately distinguished.
+- Added edition-selection guidance and direct folder navigation to the main README, and
+  scoped its 25-section requirement to the detailed edition. The detailed analysis prompt,
+  instructions, scaffold, Claude package and example reports remain unchanged.
+
 ## v1.2.0 - 2026-09-10
 
 - Added a factual short `Incident in brief` within the original cover, with direct routes

@@ -25,7 +25,38 @@ The goal is not another generic incident summary. It is a reusable briefing and 
 tool: a single report that helps a team understand the incident, challenge unsupported claims,
 prioritize defensive work, and turn public lessons into organization-specific actions.
 
-## Use the prompt
+## Choose the right edition
+
+This repository now offers a detailed analysis and a separate concise executive briefing.
+Both start from one incident identifier, but use different prompts, instructions and HTML
+scaffolds.
+
+| Edition | Best for | Start here |
+| --- | --- | --- |
+| **Detailed incident analysis** | Security and engineering teams needing the full 25-section analysis, technical mechanisms, detections and implementation guidance. | Follow **Use the detailed prompt** below. |
+| **Concise executive briefing** | Executives and board members needing business impact, key decisions, a relationship map, timeline, financial exposure, regulatory implications and priorities in eleven focused sections. | **Open the [concise-incident-analysis/ folder](concise-incident-analysis/).** |
+
+### Use the concise executive version
+
+1. **Navigate to [concise-incident-analysis/](concise-incident-analysis/).**
+2. Follow that folder's [README](concise-incident-analysis/README.md). Supply its concise
+   prompt and HTML scaffold to your assistant; use its separate assistant instructions
+   when configuring a reusable setup.
+3. Send an incident name, CVE, advisory URL or short description to the assistant with
+   research/web-search access.
+
+Use the files from that folder together. Do not substitute the detailed prompt, Custom GPT
+instructions or Claude skill for the concise edition's instructions. The concise edition
+has its own light/dark design, expanded terminology, source/confidence register, applicable
+regulatory screening and clearly separated actual costs, modelled scenarios and benchmarks.
+Its relationship map uses native Archify when available or an explicitly labelled interactive
+local fallback; the package does not claim native Archify validation when it was not run.
+
+Reports use **Incident Analysis - &lt;actual incident name or CVE&gt; - Executive Briefing**,
+with **Report Generated Date** at the top right. The concise folder includes an unfilled
+production template and a clearly fictional design preview; neither is evidence of a real incident.
+
+## Use the detailed prompt
 
 Attach [prompt/cybersecurity-incident-analysis-prompt.md](prompt/cybersecurity-incident-analysis-prompt.md)
 to an AI assistant with research or web-search access, then provide just one incident name,
@@ -82,6 +113,7 @@ prompt/       Latest reusable incident-analysis prompt
 report/       Shared Overview-first accessible HTML scaffold
 chatgpt_custom_gpt/ Reusable ChatGPT Custom GPT setup
 claude_skill/ Packaged Claude skill for reusable incident analysis
+concise-incident-analysis/ Separate executive prompt, instructions, HTML shell and usage guide
 src/graph/    React Flow reference graph source and styles
 scripts/      Deterministic bundle embedding and validation
 docs/         Workflow graphic and Archify repository architecture diagram
@@ -127,10 +159,21 @@ The validator checks:
 - every package actually included by esbuild has matching versioned notices in both
   [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt) and the distributable HTML.
 
-Every report retains canonical Sections 01–25 in order so reports remain comparable and
+Every detailed-edition report retains canonical Sections 01–25 in order so reports remain comparable and
 deep links remain stable. Analytical depth and incident-specific titles still adapt to the
 available evidence; unsupported functions remain visible with concise `unknown externally`
 or `not applicable` boundaries rather than speculative filler.
+
+The concise executive edition uses its own eleven-section structure and package checks:
+
+```sh
+node concise-incident-analysis/scripts/validate-package.mjs
+```
+
+These checks cover its title/date contract, section order, inline runtime, graph data,
+unfilled-template boundaries and instruction length. Browser interactions, responsive layout,
+accessibility and native Archify validation remain separate checks. See the concise folder's
+[design review and validation limits](concise-incident-analysis/DESIGN-REVIEW.md).
 
 ## Contributing
 
@@ -157,7 +200,7 @@ their notices and respective copyright holders are listed in
 
 ### Third-party attribution
 
-The interactive graph is built with and gives credit to:
+The detailed reference report's bundled interactive graph is built with and gives credit to:
 
 - [xyflow](https://github.com/xyflow/xyflow) for React Flow;
 - [Meta](https://github.com/facebook/react) for React and React DOM;

@@ -11,6 +11,10 @@ attribution remain permitted. This is not a legal-clearance or certification cla
 The existing detailed prompt, Custom GPT instructions, original scaffold, skill archive
 and example reports are not modified by this package.
 
+For the comprehensive 25-section workflow, return to the
+[main README's detailed-prompt instructions](../README.md#use-the-detailed-prompt).
+Use each edition's own prompt, instructions and scaffold together.
+
 ## Files to use
 
 | File | Purpose |

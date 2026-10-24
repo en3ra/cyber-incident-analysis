@@ -29,6 +29,15 @@ npm run build
 npm run validate
 ```
 
+For a completed report, also run:
+
+```sh
+python3 scripts/validate_report.py path/to/report.html
+```
+
+The shared scaffold intentionally contains placeholders and abbreviated later Parts, so run
+the report validator against a generated report rather than the unfilled scaffold.
+
 Keep changes focused, explain behavior changes in the pull request, and include validation
 results. Prompt-only changes should not modify generated example HTML unless the change
 explicitly requires it.

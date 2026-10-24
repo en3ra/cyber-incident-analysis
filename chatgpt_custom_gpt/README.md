@@ -9,7 +9,8 @@ then start new incident analyses without attaching the prompt every time.
 1. Open ChatGPT and create a new GPT.
 2. Name it `Evidence-Graded Incident Analyst`.
 3. Paste the contents of [instructions.md](instructions.md) into the GPT **Instructions** field.
-4. Upload [../prompt/cybersecurity-incident-analysis-prompt.md](../prompt/cybersecurity-incident-analysis-prompt.md) as a Knowledge file.
+4. Upload [../prompt/cybersecurity-incident-analysis-prompt.md](../prompt/cybersecurity-incident-analysis-prompt.md)
+	and [../report/report-scaffold.html](../report/report-scaffold.html) as Knowledge files.
 5. Enable web browsing/search if your ChatGPT plan exposes it.
 6. Leave Actions disabled unless you are adding your own reviewed integration.
 7. Save the GPT for yourself or your workspace.
@@ -41,5 +42,6 @@ and render the clearly labelled fallback graph from that same source.
 ## Updating The GPT
 
 When [../prompt/cybersecurity-incident-analysis-prompt.md](../prompt/cybersecurity-incident-analysis-prompt.md)
-changes, replace the Knowledge file in the GPT with the current version. If
+or [../report/report-scaffold.html](../report/report-scaffold.html) changes, replace the
+corresponding Knowledge file in the GPT with the current version. If
 [instructions.md](instructions.md) changes, replace the GPT Instructions field as well.

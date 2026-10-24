@@ -18,8 +18,9 @@ another site's branding, proprietary assets, exact layout, wording, or distincti
 **One publication, many incidents.** Every report from this template must be recognisable
 as the same product. The presentation shell — page order, the eight Part dividers, layout,
 navigation, typography, colour tokens, and the graph slot and embedding contract — is **fixed and
-identical for every incident**. What varies is the evidence, the analysis, and which
-numbered sections appear inside each Part. Part 8 states the shell as a binding contract;
+identical for every incident**. What varies is the evidence, the analysis, and the depth
+and incident-specific titles of the numbered sections inside each Part. All 25 canonical
+sections remain present. Part 8 states the shell as a binding contract;
 follow its concrete values exactly rather than designing an equivalent. Differences in
 model, application, or available tooling must never change the shell.
 
@@ -39,6 +40,8 @@ Part 8 also defines an optional Python workflow for users who want reproducible 
 regeneration. When `report/report-scaffold.html` is available in the workspace or uploaded
 Knowledge, use it as the concrete shell: replace its placeholders and incident data while
 preserving its structure, accessibility behavior, navigation, and interaction code.
+Apply the known-defect repairs in Part 8 before delivering any report copied from a
+scaffold; reuse does not establish that its runtime interactions work.
 
 **Internal workflow.** Scoping still happens first because it is a research task with a
 wrong answer. It is an internal quality gate, not a separate user workflow. Continue
@@ -216,6 +219,8 @@ knowledge_cutoff_note:
 - **Contested at the scoping level:** any field where sources disagree, and what would settle it
 - **Evidence gaps:** what is missing that the analysis will have to mark as unknown
 - **Recommended PART 6 modules:** which optional modules apply, and which to delete
+- **Section depth:** classify all 25 canonical sections as substantive, concise,
+  unknown externally, or not applicable, with one-line reasons; keep all sections present
 - **Suggested follow-ups:** searches worth running before or during the analysis
 
 ## Verdict
@@ -631,8 +636,8 @@ Use these category labels exactly: `01 Decision makers`, `02 Action`, `03 Oversi
 `21 ATT&CK`, `22 Chronology`, `23 Lessons`, `24 Evidence`, and
 `25 Sources and intelligence`. Do not omit the category or replace it with the
 incident-specific title. Desktop and mobile navigation must include the section number,
-category, and title. For a merged section, use its primary canonical number and category
-and identify the merged function in the title or opening sentence.
+category, and title. Cross-reference related functions without merging away a canonical
+section or changing its number, category, or anchor.
 
 ### Report cover, document control, and incident snapshot
 
@@ -954,6 +959,8 @@ These are structural constants. Reproduce them regardless of incident or environ
   identity and scope, current status, material impact, likely or established root cause,
   response/recovery state, overall confidence, and the most important unknown. Do not use
   storytelling, analogies, scene-setting, rhetorical hooks, or a chronology.
+  Keep four fact columns on desktop and two equal columns on narrow screens, wrapping
+  labels and values so all four facts remain visible without clipping or horizontal scrolling.
 - **Quick routes** — inside the cover, add a compact navigation region labelled `Quick
   routes`, not a new report section. Link to these eight management views using the stable
   anchors already present in the report: `Situation & scope` (`#control`), `Chronology`
@@ -1168,7 +1175,7 @@ every load-bearing claim carrying its source inline.
   evidence/lessons; desktop indexed contents column; optional slim red evidence marker on
   wide screens; full-width graphite incident pathway; Archify-backed relationship graph or labelled
   Archify fallback in the fixed graph frame; framed chronology with explicit controls and
-  persistent scrollbar; then Part 0 and the applicable
+  persistent scrollbar; then Part 0 and all 25 canonical sections of the
   numbered analysis as a 140–170px section-index column plus readable content column. Do not
   display the internal applicability decision. End with the evidence register, sources, and
   repeated AI notice. Keep the cover compact enough that the incident pathway is visibly
@@ -1177,8 +1184,9 @@ every load-bearing claim carrying its source inline.
   tables scroll horizontally with a visible affordance; multi-column diagrams become
   horizontal scrollers or stacks on narrow screens.
 - Also test at 320px. The longest headline word, sticky controls, tables, graph labels and
-  cards must not create page-level horizontal overflow. On mobile, present key facts as
-  swipeable cards, stack the graph inspector below the canvas as a layered detail inspector,
+  cards must not create page-level horizontal overflow. On mobile, keep the cover's four
+  core facts in a two-column grid with wrapped text; quick routes may use a horizontal rail
+  with a persistent scroll affordance. Stack the graph inspector below the canvas as a layered detail inspector,
   use structured content panels with strong visual separation, and preserve a visible hint
   of the next section in the first viewport. Provide a safe-area-aware bottom navigation
   dock with 44px-or-larger targets and active-location state for Overview, Attack, Graph and
@@ -1285,6 +1293,80 @@ every load-bearing claim carrying its source inline.
   and support both A4 and US Letter without clipped content.
 - **Do not use `localStorage` or `sessionStorage`** — hold state in memory.
 
+### Known scaffold defects — repair before delivery
+
+These requirements apply to reports copied from either the repository scaffold or an
+uploaded Knowledge copy. Inspect the actual copy: a fix may already be present. Preserve
+existing accessibility mechanisms when repairing it; do not replace a richer handler with
+a simpler example that loses focus management, inert states, or breakpoint cleanup.
+
+**Graph fullscreen must include its controls.** Fullscreening only `#gcanvas` promotes
+the canvas above its sibling toolbar, search and filters. Those controls, including the
+exit button, become covered even though the HTML and JavaScript remain valid.
+
+- Give the containing graph card the stable id `gwrap` and request fullscreen on that
+  complete card, including `.ghead`, `.gtools`, `.gfilters`, canvas and inspector. Never
+  fall back to fullscreening a bare canvas that excludes its controls.
+- Replace a canvas-only fullscreen rule such as `.gcanvas:fullscreen` with card-level
+  styles. For the bundled fallback, use:
+
+  ```css
+  .gwrap:fullscreen{background:var(--paper);overflow:auto;padding:0 0 16px}
+  .gwrap:fullscreen .gcanvas{height:70vh}
+  ```
+
+- Keep Fit, PNG, Reset, search, filters and `Full screen` / `Exit full screen` visible
+  and operable inside fullscreen. Refit after entry and exit; synchronize the button's
+  label and accessible state on `fullscreenchange`, including when Escape exits.
+- If the Fullscreen API is unavailable or entry fails, keep the page interactive and
+  announce the limitation. Do not leave a stuck overlay or a false fullscreen state.
+
+**The mobile drawer scrim must never block the desktop page.** An unscoped
+`.scrim.on{opacity:1;pointer-events:auto}` can intercept every click even when the sidebar
+is already visible. Enforce the same breakpoint in CSS and JavaScript:
+
+- Keep the base scrim inert (`opacity:0;pointer-events:none`). Activate `.scrim.on` only
+  within `@media(max-width:1099px)`; hide `#menu` with
+  `@media(min-width:1100px){#menu{display:none}}`.
+- In `setMenu`, normalize the requested state to mobile width, for example
+  `open = Boolean(open && mobile.matches)` with
+  `mobile = window.matchMedia("(max-width:1099px)")`. A desktop trigger must leave the
+  scrim inactive, body scrolling enabled, and background content operable.
+- Close and clean up the drawer on a breakpoint change. Preserve `aria-expanded`, focus
+  entry/return and trapping, and background inert-state cleanup. On mobile, close on
+  Escape, an outside scrim click, or a contents-link activation; keep the dock reachable
+  afterward. Do not place the scrim above the drawer's own controls.
+
+### Runtime verification — static validation is insufficient
+
+When a local runtime and the repository validator are available, run:
+
+```sh
+python3 scripts/validate_report.py <report.html>
+```
+
+Fix reported defects and review warnings. This checks structure, syntax and selected
+security/integrity rules; it does not click controls, detect covered hit targets, or prove
+accessibility conformance. When browser automation is available, exercise the final file:
+
+- At 1440px, verify Contents is hidden and a programmatic menu trigger cannot activate
+  the scrim. Its computed opacity must remain `0` and pointer-events `none`.
+- At 390px and 320px, open the drawer; close it separately using the outside scrim,
+  Escape and a contents link. Check focus return, scrolling, dock access and resizing an
+  open drawer to desktop width.
+- Enter graph fullscreen, then actually activate Fit, PNG, Reset, search and filters.
+  Exit with its button, re-enter and exit with Escape; confirm labels, focus and page
+  interaction recover. Verify PNG export remains local and contains the complete graph.
+- Exercise pathway stages, contents search/navigation, graph selection and pan/zoom,
+  chronology controls, quick routes, theme and dock. Inspect desktop/mobile layout for
+  clipping and overlays; run the accessibility checks below when tooling permits.
+
+Record structural validation, browser interaction checks, responsive inspection and
+accessibility testing separately. If a runtime, browser, API or accessibility tool is
+unavailable, state precisely which checks were not run. Do not claim a test passed from
+markup inspection or claim WCAG/W3C certification from automated checks. Tooling limits
+do not justify omitting the finished HTML or its interaction requirements.
+
 ### Template conformance check before delivering
 
 Run this first. Any `no` is a defect to fix before the report is returned, regardless of
@@ -1300,8 +1382,8 @@ how good the analysis is:
   impact, accountability, controls/recovery, governance/ownership, and evidence/lessons?
 - [ ] Are all eight Part dividers (`Part 0` and `Part I`–`Part VII`) rendered, in order,
   with their exact titles, and present in both desktop and mobile navigation?
-- [ ] Do all Sections 01–25 render in canonical order and show their canonical number and category label alongside
-  its incident-specific title, with no renumbering and no invented category labels?
+- [ ] Do all Sections 01–25 render in canonical order and show their canonical number and
+  category label alongside their incident-specific title, without renumbering or invented labels?
 - [ ] Is the sourced relationship graph authored as Archify typed JSON IR and embedded in
   the report, either as Archify-rendered output or as inert source powering the labelled
   fallback renderer?
@@ -1311,6 +1393,12 @@ how good the analysis is:
 - [ ] If the fallback renderer was used, does it preserve the old interactive feature floor:
   search, node-type filter, confidence filter, zoom out, zoom in, fit, reset, fullscreen,
   PNG export, pan/zoom, inspector details, legend and edge register?
+- [ ] Does graph fullscreen include its toolbar, filters and exit control, with working
+  Fit/PNG/Reset interactions and correct recovery after button or Escape exit?
+- [ ] Is the drawer scrim activation scoped to mobile in both CSS and JavaScript, with
+  desktop clicks unblocked and correct cleanup on closure or breakpoint changes?
+- [ ] Were runtime checks actually exercised when tools were available, and are any
+  unrun checks explicitly disclosed rather than represented as passed?
 - [ ] If Archify was available, did Archify validation/delivery pass and is the receipt or
   validation status recorded in the report metadata or evidence register?
 - [ ] If Archify was unavailable, is the fallback visibly labelled and does it render only

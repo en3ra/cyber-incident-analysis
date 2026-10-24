@@ -5,8 +5,8 @@
 ### Concise executive edition — 2026-10-25
 
 - Added the separate [concise-incident-analysis/ package](concise-incident-analysis/) with
-  its own reusable prompt, assistant instructions, unfilled HTML scaffold, fictional design
-  preview, README and maintenance/validation helpers. Users should navigate to that folder
+  its own reusable prompt, assistant instructions, unfilled HTML scaffold, README and
+  validation helper. Users should navigate to that folder
   and follow its README to use the concise prompt and companion files together.
 - Introduced eleven executive sections covering incident facts, business impact, leadership
   decisions, cause/relationships, timeline, financial exposure, response priorities,
@@ -24,7 +24,12 @@
   the independent DataBreachCost.com site are accurately distinguished.
 - Added edition-selection guidance and direct folder navigation to the main README, and
   scoped its 25-section requirement to the detailed edition. The detailed analysis prompt,
-  instructions, scaffold, Claude package and example reports remain unchanged.
+  instructions, scaffold, Claude package and existing example reports remain unchanged.
+- Added [the eMudhra concise executive report](examples/emudhra-2026-concise-report.html)
+  under `examples/`, with its distinct `concise-report` filename, sources, uncertainty,
+  regulatory/cost boundaries and explicit report-specific browser-validation limitations.
+- Removed review-only screenshots, preview HTML, design-review notes and the obsolete
+  preview-dependent scaffold builder. The production scaffold is maintained directly.
 
 ## v1.2.0 - 2026-09-10
 

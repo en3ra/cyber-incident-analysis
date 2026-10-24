@@ -222,7 +222,7 @@ Do not claim the design has trademark clearance or guarantees legal compliance.
 Return one complete offline-capable HTML file, with embedded CSS/JS/data, local font
 fallbacks and no runtime network loads or analytics. No remote fonts, image CDNs, storage,
 tracking, auto-transmission or credential fields. No build/install step required to read it.
-Do not reuse fictional preview content as evidence. Replace every template token, caption,
+Do not reuse fictional example content as evidence. Replace every template token, caption,
 table, graph, event, runtime array, calculation and source reference consistently. A missing
 fact becomes an explicit unknown—not an invented value. The blank scaffold is not a report.
 

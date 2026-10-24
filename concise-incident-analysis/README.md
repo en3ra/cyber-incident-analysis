@@ -22,8 +22,7 @@ Use each edition's own prompt, instructions and scaffold together.
 | [concise-incident-analysis.md](./concise-incident-analysis.md) | Standalone reusable executive-analysis prompt. |
 | [instructions.md](./instructions.md) | Short reusable assistant instructions; use the fenced body. |
 | [concise-report-scaffold.html](./concise-report-scaffold.html) | Unfilled neutral HTML shell with tested interaction patterns. Not an incident report. |
-| [executive-design-preview.html](./executive-design-preview.html) | Worked design demonstration, with fictional incident data and financial inputs. Never use it as evidence. |
-| [DESIGN-REVIEW.md](./DESIGN-REVIEW.md) | Source ownership, design rationale, review checks and limitations. |
+| [eMudhra concise report](../examples/emudhra-2026-concise-report.html) | Source-backed executive briefing example. Read its evidence and validation limitations before use. |
 
 ## Use
 
@@ -78,24 +77,23 @@ claims against original material.
 Use [IBM's official Cost of a Data Breach material](https://www.ibm.com/reports/data-breach)
 for primary benchmark claims; verify the actual edition, sample, cohort, currency,
 definitions and limitations. Keep actual losses, transparent activity-based scenarios and
-published benchmarks separate. The preview's amounts and low/high factors are invented
-for design demonstration and do not occur in the unfilled scaffold.
+published benchmarks separate. The unfilled scaffold contains no assumed incident amounts,
+currency or low/high factors.
 
 ## Design and validation
 
-The design was accepted with the condition that it remain unbranded. The original
-placeholder publication name and logo were removed from the preview, screenshots, template
-and export filenames. This package does not claim trademark clearance or guaranteed legal
-compliance; it avoids an invented publisher identity and preserves explicit source boundaries.
+The production scaffold is the maintained HTML shell. It uses an unbranded light/dark
+design with responsive navigation, a sourced relationship map, chronology and print
+equivalents. There is no separate preview or screenshot dependency.
 
-The preview was exercised at 320/390/768/1440 CSS pixels. Its graph, timeline, financial
-controls, menu, themes, definitions and print-state recovery were checked. The derived
-scaffold has a separate blank-state check; these checks do not validate future generated
-incident reports. Test every final report after population and after its last edit.
+The package validator checks section order, the title/date contract, inline script/JSON,
+graph references, safe defaults and instruction length. It checks the unfilled template;
+it does not validate the facts or interactions in a generated incident report. Test each
+finished report after population and after its last edit, including both themes,
+320/390/768/1440px layouts, navigation, graph controls, timeline and print-state recovery.
 
-The committed review images cover desktop light/dark themes and the relationship map.
-Refreshed mobile PNG capture was unreliable in the embedded browser; those failed local
-images are ignored rather than published. Review the responsive HTML itself for mobile.
+The eMudhra example passed static integrity checks. Report-specific browser testing was
+unavailable, as disclosed in the report; do not treat package checks as a browser pass.
 
 Native Archify rendering/schema validation, a formal screen-reader/accessibility audit
 and full A4/Letter pagination are not certified by this package. Document checks actually
@@ -104,10 +102,9 @@ performed and those unavailable; static validation does not establish WCAG confo
 Optional maintainer checks, with an existing Node runtime:
 
 ```sh
-node concise-incident-analysis/scripts/build-scaffold.mjs
 node concise-incident-analysis/scripts/validate-package.mjs
 ```
 
-Run from the repository root. The builder regenerates only this folder's unfilled scaffold
-from the approved preview. Do not run it over a populated incident report. The scripts are
-maintenance helpers, not a prerequisite for reading or generating the default report.
+Run from the repository root. Maintain the production scaffold directly and do not
+overwrite a populated incident report. Validation is a maintenance check, not a prerequisite
+for reading the finished standalone HTML report.

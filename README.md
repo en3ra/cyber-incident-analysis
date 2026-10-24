@@ -54,7 +54,8 @@ local fallback; the package does not claim native Archify validation when it was
 
 Reports use **Incident Analysis - &lt;actual incident name or CVE&gt; - Executive Briefing**,
 with **Report Generated Date** at the top right. The concise folder includes an unfilled
-production template and a clearly fictional design preview; neither is evidence of a real incident.
+production template; the [eMudhra concise report](examples/emudhra-2026-concise-report.html)
+provides a real incident example with explicit source and validation limitations.
 
 ## Use the detailed prompt
 
@@ -173,7 +174,7 @@ node concise-incident-analysis/scripts/validate-package.mjs
 These checks cover its title/date contract, section order, inline runtime, graph data,
 unfilled-template boundaries and instruction length. Browser interactions, responsive layout,
 accessibility and native Archify validation remain separate checks. See the concise folder's
-[design review and validation limits](concise-incident-analysis/DESIGN-REVIEW.md).
+[validation guidance and limits](concise-incident-analysis/README.md#design-and-validation).
 
 ## Contributing
 

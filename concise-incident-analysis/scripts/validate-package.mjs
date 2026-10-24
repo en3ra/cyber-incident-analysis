@@ -2,14 +2,14 @@ import fs from "node:fs/promises";
 import vm from "node:vm";
 const directory = new URL("../", import.meta.url);
 const read = name => fs.readFile(new URL(name, directory), "utf8");
-const [prompt, instructions, html, preview] = await Promise.all([
+const [prompt, instructions, html] = await Promise.all([
   read("concise-incident-analysis.md"), read("instructions.md"),
-  read("concise-report-scaffold.html"), read("executive-design-preview.html")
+  read("concise-report-scaffold.html")
 ]);
 const failures=[];
 const check=(condition,message)=>{if(!condition)failures.push(message);};
 const ids=["overview","impact","decisions","relationships","timeline","financial","response","governance","lessons","terminology","evidence"];
-for(const [name,content] of [["scaffold",html],["preview",preview]]){
+for(const [name,content] of [["scaffold",html]]){
   let last=-1;
   for(const id of ids){const position=content.indexOf(`id="${id}"`);check(position>last,`${name}: missing or out-of-order ${id}`);last=position;}
   check(!/Signal —|signal-illustrative|class="brand(?:-mark|-name)?"|>signal[.<]/i.test(content),`${name}: removed publisher identity remains`);
